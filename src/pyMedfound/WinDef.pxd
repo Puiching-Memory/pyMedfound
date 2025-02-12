@@ -1,22 +1,47 @@
 #cython:language_level=3
-from libc.stdint cimport uint32_t,int64_t,uint8_t
 
 cdef extern from "Windows.h":
     # must be included before other Windows headers
     pass
 
-cdef extern from "WinDef.h":
+cdef extern from "WinDef.h": # --> "miniwindef.h"
     int MAX_PATH
 
+    int FALSE
+    int TRUE
+
+    # https://learn.microsoft.com/en-us/windows/win32/learnwin32/windows-coding-conventions
     ctypedef unsigned char BYTE
     ctypedef unsigned int DWORD
-    ctypedef signed int INT32
-    ctypedef signed long long INT64
-    ctypedef signed long LONG
-    ctypedef signed long long LONGLONG
+    ctypedef int INT32
+    ctypedef short INT16
+    ctypedef long long INT64
+    ctypedef int LONG
+    ctypedef long long LONGLONG
     ctypedef unsigned int UINT32
     ctypedef unsigned long long UINT64
-    ctypedef unsigned long ULONG
+    ctypedef unsigned int ULONG
     ctypedef unsigned long long ULONGLONG
     ctypedef unsigned short WORD
-    ctypedef short int INT16
+
+    # "miniwindef.h"
+    ctypedef int BOOL
+    ctypedef float FLOAT
+    ctypedef FLOAT *PFLOAT
+    ctypedef BOOL *PBOOL # near
+    ctypedef BOOL *LPBOOL # far
+    ctypedef BYTE *PBYTE # near
+    ctypedef BYTE *LPBYTE # far
+    ctypedef int *PINT # near
+    ctypedef int *LPINT # far
+    ctypedef WORD *PWORD # near
+    ctypedef WORD *LPWORD # far
+    ctypedef long *LPLONG # far
+    ctypedef DWORD *PDWORD # near
+    ctypedef DWORD *LPDWORD # far
+    ctypedef void *LPVOID  # far
+    ctypedef const void *LPCVOID # far
+
+    ctypedef int INT
+    ctypedef unsigned int UINT
+    ctypedef unsigned int *PUINT
