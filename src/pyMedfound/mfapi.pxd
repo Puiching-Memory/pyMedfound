@@ -1,6 +1,10 @@
+# cython: language_level=3
+
 # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/
 
-from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD
+from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64
+from pyMedfound.Winerror cimport HRESULT
+
 
 cdef extern from "mfapi.h":
 
@@ -47,7 +51,6 @@ cdef extern from "mfapi.h":
         FLOAT z
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mf_quaternion
-    # A four dimensional vector, used to represent a rotation.
     ctypedef struct _MF_QUATERNION:
         FLOAT x
         FLOAT y
@@ -55,7 +58,6 @@ cdef extern from "mfapi.h":
         FLOAT w
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mf_topostatus
-    # Specifies the status of a topology during playback.
     ctypedef enum MF_TOPOSTATUS:
         MF_TOPOSTATUS_INVALID = 0
         MF_TOPOSTATUS_READY = 100
@@ -72,6 +74,40 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfallocateserialworkqueue
+    cdef HRESULT MFAllocateSerialWorkQueue(
+        DWORD dwWorkQueue,
+        DWORD *pdwWorkQueue
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfallocateworkqueue
+    cdef HRESULT MFAllocateWorkQueue(
+        DWORD *pdwWorkQueue
+        )
     
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfallocateworkqueueex
+    # HRESULT MFAllocateWorkQueueEx(
+    #     MFASYNC_WORKQUEUE_TYPE WorkQueueType,
+    #     DWORD                  *pdwWorkQueue
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfasync_workqueue_type
+    ctypedef enum MFASYNC_WORKQUEUE_TYPE:
+        MF_STANDARD_WORKQUEUE = 0
+        MF_WINDOW_WORKQUEUE = 1
+        MF_MULTITHREADED_WORKQUEUE = 2
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mfasyncresult
+    # ctypedef struct tagMFASYNCRESULT : IMFAsyncResult {
+    # OVERLAPPED       overlapped;
+    # IMFAsyncCallback *pCallback;
+    # HRESULT          hrStatusResult;
+    # DWORD            dwBytesTransferred;
+    # HANDLE           hEvent;
+    # } MFASYNCRESULT;
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfaveragetimeperframetoframerate
+    cdef HRESULT MFAverageTimePerFrameToFrameRate(
+        UINT64 unAverageTimePerFrame,
+        UINT32 *punNumerator,
+        UINT32 *punDenominator
+        )
