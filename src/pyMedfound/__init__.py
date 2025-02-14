@@ -1,3 +1,3 @@
-from . import mfapi
+from . import mfapi,winsdkver
 
 __version__ = '0.0.1'

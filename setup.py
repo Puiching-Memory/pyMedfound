@@ -25,6 +25,10 @@ ext_modules = [
         #extra_compile_args=["/openmp"],  # only for Windows 
         #extra_compile_args=["/D_M_AMD64","/D_WIN64"], # https://learn.microsoft.com/zh-cn/cpp/preprocessor/predefined-macros?view=msvc-170
     ),
+    Extension(
+        "pyMedfound.winsdkver",
+        sources=["./src/pyMedfound/winsdkver.pyx"],
+        ),
 ]
 
 setup(
