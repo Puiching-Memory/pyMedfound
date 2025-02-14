@@ -1,10 +1,10 @@
 #cython:language_level=3
 
-cdef extern from "Windows.h":
+cdef extern from "windows.h":
     # must be included before other Windows headers
     pass
 
-cdef extern from "WinDef.h": # --> "miniwindef.h"
+cdef extern from "windef.h": # --> "miniwindef.h"
     int MAX_PATH
 
     int FALSE
@@ -45,3 +45,12 @@ cdef extern from "WinDef.h": # --> "miniwindef.h"
     ctypedef int INT
     ctypedef unsigned int UINT
     ctypedef unsigned int *PUINT
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-size
+    ctypedef struct SIZE:
+        LONG cx
+        LONG cy
+
+    ctypedef SIZE* PSIZE
+    ctypedef SIZE* LPSIZE
+

@@ -1,5 +1,5 @@
 
-cdef extern from "Winerror.h":
+cdef extern from "winerror.h":
     ctypedef long HRESULT
 
     # https://learn.microsoft.com/zh-cn/windows/win32/seccrypto/common-hresult-values

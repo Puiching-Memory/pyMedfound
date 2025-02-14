@@ -4,4 +4,4 @@ print(mf.__version__)
 
 print(dir(mf))
 
-print(mf.mfapi.call_MFAverageTimePerFrameToFrameRate(166667))
+print(mf.mfapi.MFAverageTimePerFrameToFrameRatePY(166667))

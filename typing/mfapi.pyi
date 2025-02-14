@@ -1,0 +1,3 @@
+
+def MFAverageTimePerFrameToFrameRatePY(AverageTimePerFrame:int):
+    ...
