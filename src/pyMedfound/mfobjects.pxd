@@ -1,4 +1,4 @@
-from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG
+from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64
 from pyMedfound.Winerror cimport HRESULT
 from pyMedfound.guiddef cimport GUID
 
@@ -7,43 +7,59 @@ cdef extern from "mfobjects.h":
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imf2dbuffer
     ctypedef struct IMF2DBuffer:
+        pass
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-contiguouscopyfrom
-        HRESULT ContiguousCopyFrom(
-            const BYTE *pbSrcBuffer,
-            DWORD      cbSrcBuffer
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imf2dbuffer2
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-contiguouscopyto
-        HRESULT ContiguousCopyTo(
-            BYTE  *pbDestBuffer,
-            DWORD cbDestBuffer
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfactivate
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-getcontiguouslength
-        HRESULT GetContiguousLength(
-            DWORD *pcbLength
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasynccallback
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-getscanline0andpitch
-        HRESULT GetScanline0AndPitch(
-            BYTE **pbScanline0,
-            LONG *plPitch
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasynccallbacklogging
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-iscontiguousformat
-        HRESULT IsContiguousFormat(
-            BOOL *pfIsContiguous
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasyncresult
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-lock2d
-        HRESULT Lock2D(
-            BYTE **ppbScanline0,
-            LONG *plPitch
-            )
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfattributes
 
-        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-unlock2d
-        HRESULT Unlock2D()
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfaudiomediatype
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfbytestream
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfbytestreamproxyclassfactory
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfcollection
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfdxgibuffer
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfdxgidevicemanager
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediabuffer
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaevent
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventgenerator
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventqueue
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediatype
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamattributesmanager
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreammediatypemanager
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamsamplemanager
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfplugincontrol
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfplugincontrol2
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfremoteasynccallback
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfsample
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfsampleoutputstream
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfvideomediatype
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mf_attribute_serialize_options
     ctypedef enum MF_ATTRIBUTE_SERIALIZE_OPTIONS:
@@ -236,31 +252,37 @@ cdef extern from "mfobjects.h":
         MFVideoFlags_RenderTargetSurface = 0x400000
         MFVideoFlags_ForceQWORD = 0x7fffffff
 
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ns-mfobjects-mfvideoformat
-    # ctypedef struct MFVIDEOFORMAT:
-    #     DWORD                 dwSize
-    #     MFVideoInfo           videoInfo
-    #     GUID                  guidFormat
-    #     MFVideoCompressedInfo compressedInfo
-    #     MFVideoSurfaceInfo    surfaceInfo
-
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ns-mfobjects-mfvideoinfo
-    # ctypedef struct MFVideoInfo:
-    #     DWORD                    dwWidth
-    #     DWORD                    dwHeight
-    #     MFRatio                  PixelAspectRatio
-    #     MFVideoChromaSubsampling SourceChromaSubsampling
-    #     MFVideoInterlaceMode     InterlaceMode
-    #     MFVideoTransferFunction  TransferFunction
-    #     MFVideoPrimaries         ColorPrimaries
-    #     MFVideoTransferMatrix    TransferMatrix
-    #     MFVideoLighting          SourceLighting
-    #     MFRatio                  FramesPerSecond
-    #     MFNominalRange           NominalRange
-    #     MFVideoArea              GeometricAperture
-    #     MFVideoArea              MinimumDisplayAperture
-    #     MFVideoArea              PanScanAperture
-    #     unsigned __int64         VideoFlags
+    ctypedef struct MFVideoInfo:
+        DWORD                    dwWidth
+        DWORD                    dwHeight
+        MFRatio                  PixelAspectRatio
+        MFVideoChromaSubsampling SourceChromaSubsampling
+        MFVideoInterlaceMode     InterlaceMode
+        MFVideoTransferFunction  TransferFunction
+        MFVideoPrimaries         ColorPrimaries
+        MFVideoTransferMatrix    TransferMatrix
+        MFVideoLighting          SourceLighting
+        MFRatio                  FramesPerSecond
+        MFNominalRange           NominalRange
+        MFVideoArea              GeometricAperture
+        MFVideoArea              MinimumDisplayAperture
+        MFVideoArea              PanScanAperture
+        UINT64                   VideoFlags
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ns-mfobjects-mfvideosurfaceinfo
+    ctypedef struct MFVideoSurfaceInfo:
+        DWORD          Format
+        DWORD          PaletteEntries
+        MFPaletteEntry Palette[1]
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ns-mfobjects-mfvideoformat
+    ctypedef struct MFVIDEOFORMAT:
+        DWORD                 dwSize
+        MFVideoInfo           videoInfo
+        GUID                  guidFormat
+        MFVideoCompressedInfo compressedInfo
+        MFVideoSurfaceInfo    surfaceInfo
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mfvideointerlacemode
     ctypedef enum MFVideoInterlaceMode:
@@ -302,12 +324,6 @@ cdef extern from "mfobjects.h":
         MFVideoPrimaries_Display_P3 = 13
         MFVideoPrimaries_Last
         MFVideoPrimaries_ForceDWORD = 0x7fffffff
-
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ns-mfobjects-mfvideosurfaceinfo
-    ctypedef struct MFVideoSurfaceInfo:
-        DWORD          Format
-        DWORD          PaletteEntries
-        MFPaletteEntry Palette[1]
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mfvideotransferfunction
     ctypedef enum MFVideoTransferFunction:
