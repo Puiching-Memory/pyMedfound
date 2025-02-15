@@ -1,8 +1,9 @@
-from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID
+from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID,LPCWSTR
 from pyMedfound.Winerror cimport HRESULT
 from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
 from pyMedfound.Unknwn cimport IUnknown
 from pyMedfound.PropIdlBase cimport PROPVARIANT,REFPROPVARIANT
+from pyMedfound.wtypes cimport VT_UI4,VT_UI8,VT_R8,VT_CLSID,VT_LPWSTR,VT_UNKNOWN
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/
 cdef extern from "mfobjects.h":
@@ -187,10 +188,10 @@ cdef extern from "mfobjects.h":
             )
         
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getitemtype
-        # HRESULT GetItemType(
-        #     REFGUID           guidKey,
-        #     MF_ATTRIBUTE_TYPE *pType
-        #     )
+        HRESULT GetItemType(
+            REFGUID           guidKey,
+            MF_ATTRIBUTE_TYPE *pType
+            )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getstring
         HRESULT GetString(
@@ -226,10 +227,60 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-lockstore
+        HRESULT LockStore()
 
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setblob
+        HRESULT SetBlob(
+            REFGUID     guidKey,  # [in]
+            const UINT8 *pBuf,    # [in]
+            UINT32      cbBufSize # [in]
+            )
 
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setdouble
+        HRESULT SetDouble(
+            REFGUID guidKey, # [in]
+            double  fValue   # [in]
+            )
 
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setguid
+        HRESULT SetGUID(
+            REFGUID guidKey,  # [in]
+            REFGUID guidValue # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setitem
+        HRESULT SetItem(
+            REFGUID        guidKey, # [in]
+            REFPROPVARIANT Value    # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setstring
+        HRESULT SetString(
+            REFGUID guidKey, # [in]
+            LPCWSTR wszValue # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setuint32
+        HRESULT SetUINT32(
+            REFGUID guidKey, # [in]
+            UINT32  unValue  # [in]
+            )
         
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setuint64
+        HRESULT SetUINT64(
+            REFGUID guidKey,
+            UINT64  unValue
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-setunknown
+        HRESULT SetUnknown(
+            REFGUID  guidKey,
+            IUnknown *pUnknown
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-unlockstore
+        HRESULT UnlockStore()
+            
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfactivate
     cdef cppclass IMFActivate(IMFAttributes):
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfactivate-activateobject
@@ -289,14 +340,14 @@ cdef extern from "mfobjects.h":
         MF_ATTRIBUTE_SERIALIZE_UNKNOWN_BYREF = 0x1
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mf_attribute_type
-    # ctypedef enum MF_ATTRIBUTE_TYPE:
-    #     MF_ATTRIBUTE_UINT32 = VT_UI4
-    #     MF_ATTRIBUTE_UINT64 = VT_UI8
-    #     MF_ATTRIBUTE_DOUBLE = VT_R8
-    #     MF_ATTRIBUTE_GUID = VT_CLSID
-    #     MF_ATTRIBUTE_STRING = VT_LPWSTR
-    #     MF_ATTRIBUTE_BLOB
-    #     MF_ATTRIBUTE_IUNKNOWN = VT_UNKNOWN
+    ctypedef enum MF_ATTRIBUTE_TYPE:
+        MF_ATTRIBUTE_UINT32 = VT_UI4
+        MF_ATTRIBUTE_UINT64 = VT_UI8
+        MF_ATTRIBUTE_DOUBLE = VT_R8
+        MF_ATTRIBUTE_GUID = VT_CLSID
+        MF_ATTRIBUTE_STRING = VT_LPWSTR
+        MF_ATTRIBUTE_BLOB
+        MF_ATTRIBUTE_IUNKNOWN = VT_UNKNOWN
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mf_attributes_match_type
     ctypedef enum MF_ATTRIBUTES_MATCH_TYPE:
