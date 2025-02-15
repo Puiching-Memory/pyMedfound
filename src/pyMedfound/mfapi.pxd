@@ -329,4 +329,60 @@ cdef extern from "mfapi.h":
     #     IMFMediaEventQueue **ppMediaEventQueue
     #     )
 
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatefile
+    # HRESULT MFCreateFile(
+    #     MF_FILE_ACCESSMODE AccessMode,
+    #     MF_FILE_OPENMODE   OpenMode,
+    #     MF_FILE_FLAGS      fFlags,
+    #     LPCWSTR            pwszFileURL,
+    #     IMFByteStream      **ppIByteStream
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatelegacymediabufferonmfmediabuffer
+    # HRESULT MFCreateLegacyMediaBufferOnMFMediaBuffer(
+    #     IMFSample      *pSample,
+    #     IMFMediaBuffer *pMFMediaBuffer,
+    #     DWORD          cbOffset,
+    #     IMediaBuffer   **ppMediaBuffer
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediabufferfrommediatype
+    # HRESULT MFCreateMediaBufferFromMediaType(
+    #     IMFMediaType   *pMediaType,
+    #     LONGLONG       llDuration,
+    #     DWORD          dwMinLength,
+    #     DWORD          dwMinAlignment,
+    #     IMFMediaBuffer **ppBuffer
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediabufferwrapper
+    # HRESULT MFCreateMediaBufferWrapper(
+    #     IMFMediaBuffer *pBuffer,
+    #     DWORD          cbOffset,
+    #     DWORD          dwLength,
+    #     IMFMediaBuffer **ppBuffer
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediaevent
+    # HRESULT MFCreateMediaEvent(
+    #     MediaEventType    met,
+    #     REFGUID           guidExtendedType,
+    #     HRESULT           hrStatus,
+    #     const PROPVARIANT *pvValue,
+    #     IMFMediaEvent     **ppEvent
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediaextensionactivate
+    # HRESULT MFCreateMediaExtensionActivate(
+    #     PCWSTR   szActivatableClassId,
+    #     IUnknown *pConfiguration,
+    #     REFIID   riid,
+    #     LPVOID   *ppvObject
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediatype
+    # HRESULT MFCreateMediaType(
+    # IMFMediaType **ppMFType
+    # )
+
     

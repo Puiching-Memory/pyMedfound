@@ -37,4 +37,5 @@ setup(
     data_files=[
         ("Lib/site-packages/pyMedfound", ["typing/mfapi.pyi"]),
     ],
+    language="c++", 
 )

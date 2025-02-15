@@ -1,25 +1,248 @@
-from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64
+from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID
 from pyMedfound.Winerror cimport HRESULT
-from pyMedfound.guiddef cimport GUID
+from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
+from pyMedfound.Unknwn cimport IUnknown
+from pyMedfound.PropIdlBase cimport PROPVARIANT,REFPROPVARIANT
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/
 cdef extern from "mfobjects.h":
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imf2dbuffer
-    ctypedef struct IMF2DBuffer:
-        pass
+    cdef cppclass IMF2DBuffer(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-contiguouscopyfrom
+        HRESULT ContiguousCopyFrom(
+            const BYTE *pbSrcBuffer, # [in]
+            DWORD      cbSrcBuffer   # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-contiguouscopyto
+        HRESULT ContiguousCopyTo(
+            BYTE  *pbDestBuffer, # [out]
+            DWORD cbDestBuffer   # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-getcontiguouslength
+        HRESULT GetContiguousLength(
+            DWORD *pcbLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-getscanline0andpitch
+        HRESULT GetScanline0AndPitch(
+            BYTE **pbScanline0, # [out]
+            LONG *plPitch       # [out] 
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-iscontiguousformat
+        HRESULT IsContiguousFormat(
+            BOOL *pfIsContiguous # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-lock2d
+        HRESULT Lock2D(
+        BYTE **ppbScanline0, # [out]
+        LONG *plPitch        # [out]
+        )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer-unlock2d
+        HRESULT Unlock2D()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imf2dbuffer2
+    cdef cppclass IMF2DBuffer2(IMF2DBuffer):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer2-copy2dto
+        HRESULT Copy2DTo(
+            IMF2DBuffer2 *pDestBuffer # [in]
+            )
 
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfactivate
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imf2dbuffer2-lock2dsize
+        HRESULT Lock2DSize(
+            MF2DBuffer_LockFlags lockFlags,        # [in]
+            BYTE                 **ppbScanline0,   # [out]
+            LONG                 *plPitch,         # [out]
+            BYTE                 **ppbBufferStart, # [out]
+            DWORD                *pcbBufferLength  # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasynccallback
+    cdef cppclass IMFAsyncCallback(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasynccallback-getparameters
+        HRESULT GetParameters(
+            DWORD *pdwFlags, # [out]
+            DWORD *pdwQueue  # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasynccallback-invoke
+        HRESULT Invoke(
+            IMFAsyncResult *pAsyncResult # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasynccallbacklogging
+    cdef cppclass IMFAsyncCallbackLogging(IMFAsyncCallback):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasynccallbacklogging-getobjectpointer
+        void * GetObjectPointer()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasynccallbacklogging-getobjecttag
+        DWORD GetObjectTag()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfasyncresult
+    cdef cppclass IMFAsyncResult(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasyncresult-getobject
+        HRESULT GetObject(
+            IUnknown **ppObject # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasyncresult-getstate
+        HRESULT GetState(
+            IUnknown **ppunkState # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasyncresult-getstatenoaddref
+        IUnknown * GetStateNoAddRef()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasyncresult-getstatus
+        HRESULT GetStatus()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfasyncresult-setstatus
+        HRESULT SetStatus(
+            HRESULT hrStatus # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfattributes
+    cdef cppclass IMFAttributes(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-compare
+        HRESULT Compare(
+            IMFAttributes            *pTheirs, # [in]
+            MF_ATTRIBUTES_MATCH_TYPE MatchType,# [in]
+            BOOL                     *pbResult # [out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-compareitem
+        HRESULT CompareItem(
+            REFGUID        guidKey, # [in]
+            REFPROPVARIANT Value,   # [in]
+            BOOL           *pbResult# [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-copyallitems
+        HRESULT CopyAllItems(
+            IMFAttributes *pDest # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-deleteallitems
+        HRESULT DeleteAllItems()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-deleteitem
+        HRESULT DeleteItem(
+            REFGUID guidKey # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getallocatedblob
+        HRESULT GetAllocatedBlob(
+            REFGUID guidKey, # [in]
+            UINT8   **ppBuf, # [out]
+            UINT32  *pcbSize # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getallocatedstring
+        HRESULT GetAllocatedString(
+            REFGUID guidKey,     # [in]
+            LPWSTR  *ppwszValue, # [out]
+            UINT32  *pcchLength  # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getblob
+        HRESULT GetBlob(
+            REFGUID guidKey,     # [in]
+            UINT8   *pBuf,       # [out]
+            UINT32  cbBufSize,   # [in]
+            UINT32  *pcbBlobSize # [out] 
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getblobsize
+        HRESULT GetBlobSize(
+            REFGUID guidKey,     # [in]
+            UINT32  *pcbBlobSize # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getcount
+        HRESULT GetCount(
+            UINT32 *pcItems # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getdouble
+        HRESULT GetDouble(
+            REFGUID guidKey, # [in]
+            double  *pfValue # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getguid
+        HRESULT GetGUID(
+            REFGUID guidKey,    # [in]
+            GUID    *pguidValue # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getitem
+        HRESULT GetItem(
+            REFGUID     guidKey, # [in]
+            PROPVARIANT *pValue  # [in, out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getitemtype
+        # HRESULT GetItemType(
+        #     REFGUID           guidKey,
+        #     MF_ATTRIBUTE_TYPE *pType
+        #     )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getstring
+        HRESULT GetString(
+            REFGUID guidKey,    # [in]
+            LPWSTR  pwszValue,  # [out]
+            UINT32  cchBufSize, # [in]
+            UINT32  *pcchLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getstringlength
+        HRESULT GetStringLength(
+            REFGUID guidKey,    # [in]
+            UINT32  *pcchLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getuint32
+        HRESULT GetUINT32(
+            REFGUID guidKey,  # [in]
+            UINT32  *punValue # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getuint64
+        HRESULT GetUINT64(
+            REFGUID guidKey,  # [in]
+            UINT64  *punValue # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-getunknown
+        HRESULT GetUnknown(
+            REFGUID guidKey, # [in]
+            REFIID  riid,    # [in]
+            LPVOID  *ppv     # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfattributes-lockstore
+
+
+
+        
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfactivate
+    cdef cppclass IMFActivate(IMFAttributes):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfactivate-activateobject
+        HRESULT ActivateObject(
+            REFIID riid, # [in]
+            void   **ppv # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfactivate-detachobject
+        HRESULT DetachObject()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfactivate-shutdownobject
+        HRESULT ShutdownObject()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfaudiomediatype
 
