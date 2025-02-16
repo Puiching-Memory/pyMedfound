@@ -497,10 +497,80 @@ cdef extern from "mfobjects.h":
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediabuffer
     cdef cppclass IMFMediaBuffer(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediabuffer-getcurrentlength
+        HRESULT GetCurrentLength(
+            DWORD *pcbCurrentLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediabuffer-getmaxlength
+        HRESULT GetMaxLength(
+            DWORD *pcbMaxLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediabuffer-lock
+        HRESULT Lock(
+            BYTE  **ppbBuffer,      # [out]
+            DWORD *pcbMaxLength,    # [out]
+            DWORD *pcbCurrentLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediabuffer-setcurrentlength
+        HRESULT SetCurrentLength(
+            DWORD cbCurrentLength # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediabuffer-unlock
+        HRESULT Unlock()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaevent
+    cdef cppclass IMFMediaEvent(IMFAttributes):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-getextendedtype
+        HRESULT GetExtendedType(
+            GUID *pguidExtendedType # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-getstatus
+        HRESULT GetStatus(
+            HRESULT *phrStatus # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-gettype
+        HRESULT GetType(
+            MediaEventType *pmet # [out]
+        )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-getvalue
+        HRESULT GetValue(
+            PROPVARIANT *pvValue # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventgenerator
+    cdef cppclass IMFMediaEventGenerator(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-begingetevent
+        HRESULT BeginGetEvent(
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-endgetevent
+        HRESULT EndGetEvent(
+            IMFAsyncResult *pResult, # [in]
+            IMFMediaEvent  **ppEvent # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-getevent
+        HRESULT GetEvent(
+            DWORD         dwFlags,  # [in]
+            IMFMediaEvent **ppEvent # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-queueevent
+        HRESULT QueueEvent(
+            MediaEventType    met,              # [in]
+            REFGUID           guidExtendedType, # [in]
+            HRESULT           hrStatus,         # [in]
+            const PROPVARIANT *pvValue          # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventqueue
 
