@@ -1,3 +1,4 @@
+# cython: language_level=3
 from pyMedfound cimport winsdkver
 
 def get_WIN32_MAXVER():

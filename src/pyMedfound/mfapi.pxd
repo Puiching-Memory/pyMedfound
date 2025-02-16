@@ -1,8 +1,8 @@
 # cython: language_level=3
 
-from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT
+from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT,UINT8,LPDWORD,LPWSTR,ULONG,LONGLONG,INT64
 from pyMedfound.Winerror cimport HRESULT
-from pyMedfound.guiddef cimport GUID,REFIID
+from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
 from pyMedfound.Unknwn cimport IUnknown
 
 
@@ -385,4 +385,598 @@ cdef extern from "mfapi.h":
     # IMFMediaType **ppMFType
     # )
 
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediatypefromrepresentation
+    # HRESULT MFCreateMediaTypeFromRepresentation(
+    #     GUID         guidRepresentation, # [in]
+    #     LPVOID       pvRepresentation,   # [in]
+    #     IMFMediaType **ppIMediaType      # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatememorybuffer
+    # HRESULT MFCreateMemoryBuffer(
+    #     DWORD          cbMaxLength,
+    #     IMFMediaBuffer **ppBuffer
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemfbytestreamwrapper
+    # HRESULT MFCreateMFByteStreamWrapper(
+    #     IMFByteStream *pStream,         # [in]
+    #     IMFByteStream **ppStreamWrapper # [in]
+    #     )
     
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemfvideoformatfrommfmediatype
+    # !Deprecated!
+    # HRESULT MFCreateMFVideoFormatFromMFMediaType(
+    #     IMFMediaType  *pMFType, # [in]
+    #     MFVIDEOFORMAT **ppMFVF, # [out]
+    #     UINT32        *pcbSize  # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreamattributes
+    # HRESULT MFCreateMuxStreamAttributes(
+    #     IMFCollection *pAttributesToMux, # [in]
+    #     IMFAttributes **ppMuxAttribs     # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreammediatype
+    # HRESULT MFCreateMuxStreamMediaType(
+    #     IMFCollection *pMediaTypesToMux, # [in]
+    #     IMFMediaType  **ppMuxMediaType   # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreamsample
+    # HRESULT MFCreateMuxStreamSample(
+    #     IMFCollection *pSamplesToMux, # [in]
+    #     IMFSample     **ppMuxSample   # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatesample
+    # HRESULT MFCreateSample(
+    #     IMFSample **ppIMFSample
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatetempfile
+    # HRESULT MFCreateTempFile(
+    #     MF_FILE_ACCESSMODE AccessMode,
+    #     MF_FILE_OPENMODE   OpenMode,
+    #     MF_FILE_FLAGS      fFlags,
+    #     IMFByteStream      **ppIByteStream
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatype
+    # !Deprecated!
+    # HRESULT MFCreateVideoMediaType(
+    #     const MFVIDEOFORMAT *pVideoFormat,      # [in]
+    #     IMFVideoMediaType   **ppIVideoMediaType # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefrombitmapinfoheader
+    # FIXME: This function is not implemented.
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefrombitmapinfoheaderex
+    # HRESULT MFCreateVideoMediaTypeFromBitMapInfoHeaderEx(
+    #     const BITMAPINFOHEADER *pbmihBitMapInfoHeader, # [in]
+    #     UINT32                 cbBitMapInfoHeader,     # [in]
+    #     DWORD                  dwPixelAspectRatioX,
+    #     DWORD                  dwPixelAspectRatioY,
+    #     MFVideoInterlaceMode   InterlaceMode,
+    #     QWORD                  VideoFlags,
+    #     DWORD                  dwFramesPerSecondNumerator,
+    #     DWORD                  dwFramesPerSecondDenominator,
+    #     DWORD                  dwMaxBitRate,
+    #     IMFVideoMediaType      **ppIVideoMediaType    # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefromsubtype
+    # HRESULT MFCreateVideoMediaTypeFromSubtype(
+    #     const GUID        *pAMSubtype,        # [in]
+    #     IMFVideoMediaType **ppIVideoMediaType # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefromvideoinfoheader
+    # HRESULT MFCreateVideoMediaTypeFromVideoInfoHeader(
+    #     const KS_VIDEOINFOHEADER *pVideoInfoHeader,
+    #     DWORD                    cbVideoInfoHeader,
+    #     DWORD                    dwPixelAspectRatioX,
+    #     DWORD                    dwPixelAspectRatioY,
+    #     MFVideoInterlaceMode     InterlaceMode,
+    #     QWORD                    VideoFlags,
+    #     const GUID               *pSubtype,
+    #     IMFVideoMediaType        **ppIVideoMediaType
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefromvideoinfoheader2
+    # HRESULT MFCreateVideoMediaTypeFromVideoInfoHeader2(
+    #     const KS_VIDEOINFOHEADER2 *pVideoInfoHeader,
+    #     DWORD                     cbVideoInfoHeader,
+    #     QWORD                     AdditionalVideoFlags,
+    #     const GUID                *pSubtype,
+    #     IMFVideoMediaType         **ppIVideoMediaType
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideosampleallocatorex
+    HRESULT MFCreateVideoSampleAllocatorEx(
+        REFIID riid,                  # [in]
+        void   **ppSampleAllocator    # [out]
+        )
+    
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatewaveformatexfrommfmediatype
+    # HRESULT MFCreateWaveFormatExFromMFMediaType(
+    #     IMFMediaType *pMFType,
+    #     WAVEFORMATEX **ppWF,
+    #     UINT32       *pcbSize,
+    #     UINT32       Flags
+    #     )
+    
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatewicbitmapbuffer
+    # HRESULT MFCreateWICBitmapBuffer(
+    #     REFIID         riid,         # [in]
+    #     IUnknown       *punkSurface, # [in]
+    #     IMFMediaBuffer **ppBuffer    # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfdepthmeasurement
+    ctypedef enum MFDepthMeasurement:
+        DistanceToFocalPlane = 0
+        DistanceToOpticalCenter = 1
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendcreatefile
+    # HRESULT MFEndCreateFile(
+    #     IMFAsyncResult *pResult, # [in]
+    #     IMFByteStream  **ppFile  # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendregisterworkqueuewithmmcss
+    # HRESULT MFEndRegisterWorkQueueWithMMCSS(
+    #     IMFAsyncResult *pResult,  # [in]
+    #     DWORD          *pdwTaskId # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendunregisterworkqueuewithmmcss
+    # HRESULT MFEndUnregisterWorkQueueWithMMCSS(
+    #     IMFAsyncResult *pResult # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mffolddown_matrix
+    ctypedef struct MFFOLDDOWN_MATRIX:
+        UINT32 cbSize
+        UINT32 cSrcChannels
+        UINT32 cDstChannels
+        UINT32 dwChannelMask
+        LONG   Coeff[64]
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfframeratetoaveragetimeperframe
+    HRESULT MFFrameRateToAverageTimePerFrame(
+        UINT32 unNumerator, # [in]
+        UINT32 unDenominator, # [in]
+        UINT64 *punAverageTimePerFrame # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfframesourcetypes
+    ctypedef enum MFFrameSourceTypes:
+        MFFrameSourceTypes_Color = 0x0001
+        MFFrameSourceTypes_Infrared = 0x0002
+        MFFrameSourceTypes_Depth = 0x0004
+        MFFrameSourceTypes_Image = 0x0008
+        MFFrameSourceTypes_Custom = 0x0080
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattribute2uint32asuint64
+    # HRESULT MFGetAttribute2UINT32asUINT64(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [out]
+    #     UINT32        *punHigh32,   # [out]
+    #     UINT32        *punLow32     # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributedouble
+    # double MFGetAttributeDouble(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     double        fDefault      # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeratio
+    # HRESULT MFGetAttributeRatio(
+    #     IMFAttributes *pAttributes,   # [in]
+    #     REFGUID       guidKey,        # [in]
+    #     UINT32        *punNumerator,  # [out]
+    #     UINT32        *punDenominator # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesasblob
+    # HRESULT MFGetAttributesAsBlob(
+    #     IMFAttributes *pAttributes, # [in]
+    #     UINT8         *pBuf,        # [out]
+    #     UINT          cbBufSize     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesasblobsize
+    # HRESULT MFGetAttributesAsBlobSize(
+    #     IMFAttributes *pAttributes, # [in]
+    #     UINT32        *pcbBufSize   # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesize
+    # HRESULT MFGetAttributeSize(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT32        *punWidth,    # [out]
+    #     UINT32        *punHeight    # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributestring
+    # HRESULT MFGetAttributeString(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     PWSTR         *ppsz         # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeuint32
+    # UINT32 MFGetAttributeUINT32(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT32        unDefault     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeuint64
+    # UINT64 MFGetAttributeUINT64(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT64        unDefault     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetcontentprotectionsystemclsid
+    # HRESULT MFGetContentProtectionSystemCLSID(
+    #     REFGUID guidProtectionSystemID, # [in]
+    #     CLSID   *pclsid                 # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetmftmerit
+    HRESULT MFGetMFTMerit(
+        IUnknown   *pMFT,      # [in, out]
+        UINT32     cbVerifier, # [in]
+        const BYTE *verifier,  # [in]
+        DWORD      *merit      # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetplanesize
+    HRESULT MFGetPlaneSize(
+        DWORD format,       # [in]
+        DWORD dwWidth,      # [in]
+        DWORD dwHeight,     # [in]
+        DWORD *pdwPlaneSize # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetplugincontrol
+    # HRESULT MFGetPluginControl(
+    #     IMFPluginControl **ppPluginControl # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetstrideforbitmapinfoheader
+    HRESULT MFGetStrideForBitmapInfoHeader(
+        DWORD format,  # [in]
+        DWORD dwWidth, # [in]
+        LONG  *pStride # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgettimerperiodicity
+    HRESULT MFGetTimerPeriodicity(
+        DWORD *Periodicity # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetuncompressedvideoformat
+    # !Deprecated!
+    # DWORD MFGetUncompressedVideoFormat(
+    #     const MFVIDEOFORMAT *pVideoFormat # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetworkqueuemmcssclass
+    HRESULT MFGetWorkQueueMMCSSClass(
+        DWORD  dwWorkQueueId, # [in]
+        LPWSTR pwszClass,     # [out]
+        DWORD  *pcchClass     # [in, out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetworkqueuemmcsspriority
+    HRESULT MFGetWorkQueueMMCSSPriority(
+        DWORD dwWorkQueueId, # [in]
+        LONG  *lPriority     # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetworkqueuemmcsstaskid
+    HRESULT MFGetWorkQueueMMCSSTaskId(
+        DWORD   dwWorkQueueId, # [in]
+        LPDWORD pdwTaskId      # [out]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfheapalloc
+    # void * MFHeapAlloc(
+    #     size_t          nSize,    # [in]
+    #     ULONG           dwFlags,  # [in]
+    #     char            *pszFile, # [in]
+    #     int             line,     # [in]
+    #     EAllocationType eat       # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfheapfree
+    void MFHeapFree(
+        void *pv # [in]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitammediatypefrommfmediatype
+    # HRESULT MFInitAMMediaTypeFromMFMediaType(
+    #     IMFMediaType  *pMFType,
+    #     GUID          guidFormatBlockType,
+    #     AM_MEDIA_TYPE *pAMType
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitattributesfromblob
+    # HRESULT MFInitAttributesFromBlob(
+    #     IMFAttributes *pAttributes, # [in]
+    #     const UINT8   *pBuf,        # [in]
+    #     UINT          cbBufSize     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromammediatype
+    # HRESULT MFInitMediaTypeFromAMMediaType(
+    #     IMFMediaType        *pMFType,
+    #     const AM_MEDIA_TYPE *pAMType
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefrommfvideoformat
+    # !Deprecated!
+    # HRESULT MFInitMediaTypeFromMFVideoFormat(
+    #     IMFMediaType        *pMFType,
+    #     const MFVIDEOFORMAT *pMFVF,
+    #     UINT32              cbBufSize
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefrommpeg1videoinfo
+    # HRESULT MFInitMediaTypeFromMPEG1VideoInfo(
+    #     IMFMediaType         *pMFType,
+    #     const MPEG1VIDEOINFO *pMP1VI,
+    #     UINT32               cbBufSize,
+    #     const GUID           *pSubtype
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefrommpeg2videoinfo
+    # HRESULT MFInitMediaTypeFromMPEG2VideoInfo(
+    #     IMFMediaType         *pMFType,
+    #     const MPEG2VIDEOINFO *pMP2VI,
+    #     UINT32               cbBufSize,
+    #     const GUID           *pSubtype
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromvideoinfoheader
+    # HRESULT MFInitMediaTypeFromVideoInfoHeader(
+    #     IMFMediaType          *pMFType,
+    #     const VIDEOINFOHEADER *pVIH,
+    #     UINT32                cbBufSize,
+    #     const GUID            *pSubtype
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromvideoinfoheader2
+    # HRESULT MFInitMediaTypeFromVideoInfoHeader2(
+    #     IMFMediaType           *pMFType,
+    #     const VIDEOINFOHEADER2 *pVIH2,
+    #     UINT32                 cbBufSize,
+    #     const GUID             *pSubtype
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromwaveformatex
+    # HRESULT MFInitMediaTypeFromWaveFormatEx(
+    #     IMFMediaType       *pMFType,
+    #     const WAVEFORMATEX *pWaveFormat,
+    #     UINT32             cbBufSize
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitvideoformat
+    # !Deprecated!
+    # HRESULT MFInitVideoFormat(
+    #     MFVIDEOFORMAT         *pVideoFormat, # [out]
+    #     MFStandardVideoFormat type           # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitvideoformat_rgb
+    # !Deprecated!
+    # HRESULT MFInitVideoFormat_RGB(
+    #     MFVIDEOFORMAT *pVideoFormat, # [in]
+    #     DWORD         dwWidth,       # [in]
+    #     DWORD         dwHeight,      # [in]
+    #     DWORD         D3Dfmt         # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinvokecallback
+    # HRESULT MFInvokeCallback(
+    #     IMFAsyncResult *pAsyncResult
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfisformatyuv
+    BOOL MFIsFormatYUV(
+        DWORD Format # [in]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfllmuldiv
+    LONGLONG MFllMulDiv(
+        LONGLONG a,
+        LONGLONG b,
+        LONGLONG c,
+        LONGLONG d
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflockdxgidevicemanager
+    # HRESULT MFLockDXGIDeviceManager(
+    #     UINT                 *pResetToken, # [out]
+    #     IMFDXGIDeviceManager **ppManager   # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflockplatform
+    HRESULT MFLockPlatform()
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflocksharedworkqueue
+    # HRESULT MFLockSharedWorkQueue(
+    #     PCWSTR wszClass,     # [in]
+    #     LONG   BasePriority, # [in]
+    #     DWORD  *pdwTaskId,   # [in, out]
+    #     DWORD  *pID          # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflockworkqueue
+    HRESULT MFLockWorkQueue(
+        DWORD dwWorkQueue # [in]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfmapdx9formattodxgiformat
+    # DXGI_FORMAT MFMapDX9FormatToDXGIFormat(
+    #     DWORD dx9 # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfmapdxgiformattodx9format
+    # DWORD MFMapDXGIFormatToDX9Format(
+    #     DXGI_FORMAT dx11 # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nc-mfapi-mfperiodiccallback
+    # MFPERIODICCALLBACK Mfperiodiccallback
+    # void Mfperiodiccallback(
+    #     IUnknown *pContext # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mfpinholecameraintrinsic_intrinsicmodel
+    ctypedef struct MFPinholeCameraIntrinsic_IntrinsicModel:
+        UINT32                               Width
+        UINT32                               Height
+        MFCameraIntrinsic_PinholeCameraModel CameraModel
+        MFCameraIntrinsic_DistortionModel    DistortionModel
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mfpinholecameraintrinsics
+    ctypedef struct MFPinholeCameraIntrinsics:
+        UINT32                                  IntrinsicModelCount
+        MFPinholeCameraIntrinsic_IntrinsicModel IntrinsicModels[1]
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputwaitingworkitem
+    # HRESULT MFPutWaitingWorkItem(
+    #     HANDLE         hEvent,   # [in]
+    #     LONG           Priority, # [in]
+    #     IMFAsyncResult *pResult, # [in]
+    #     MFWORKITEM_KEY *pKey     # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitem
+    # HRESULT MFPutWorkItem(
+    #     DWORD            dwQueue,    # [in]
+    #     IMFAsyncCallback *pCallback, # [in]
+    #     IUnknown         *pState     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitem2
+    # HRESULT MFPutWorkItem2(
+    #     DWORD            dwQueue,    # [in]
+    #     LONG             Priority,   # [in]
+    #     IMFAsyncCallback *pCallback, # [in]
+    #     IUnknown         *pState     # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitemex
+    # HRESULT MFPutWorkItemEx(
+    #     DWORD          dwQueue, # [in]
+    #     IMFAsyncResult *pResult # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitemex2
+    # HRESULT MFPutWorkItemEx2(
+    #     DWORD          dwQueue,  # [in]
+    #     LONG           Priority, # [in]
+    #     IMFAsyncResult *pResult  # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfregisterlocalbytestreamhandler
+    # HRESULT MFRegisterLocalByteStreamHandler(
+    #     PCWSTR      szFileExtension, # [in]
+    #     PCWSTR      szMimeType,      # [in]
+    #     IMFActivate *pActivate       # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfregisterlocalschemehandler
+    # HRESULT MFRegisterLocalSchemeHandler(
+    #     PCWSTR      szScheme,  # [in]
+    #     IMFActivate *pActivate # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfregisterplatformwithmmcss
+    # HRESULT MFRegisterPlatformWithMMCSS(
+    #     PCWSTR wszClass,   # [in]
+    #     DWORD  *pdwTaskId, # [in, out]
+    #     LONG   lPriority   # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfremoveperiodiccallback
+    HRESULT MFRemovePeriodicCallback(
+        DWORD dwKey # [in]
+        )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfsampleencryptionprotectionscheme
+    ctypedef enum MFSampleEncryptionProtectionScheme:
+        MF_SAMPLE_ENCRYPTION_PROTECTION_SCHEME_NONE = 0
+        MF_SAMPLE_ENCRYPTION_PROTECTION_SCHEME_AES_CTR = 1
+        MF_SAMPLE_ENCRYPTION_PROTECTION_SCHEME_AES_CBC = 2
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfscheduleworkitem
+    # HRESULT MFScheduleWorkItem(
+    #     IMFAsyncCallback *pCallback, # [in]
+    #     IUnknown         *pState,    # [in]
+    #     INT64            Timeout,    # [in]
+    #     MFWORKITEM_KEY   *pKey       # [out]
+    #     )
+    
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfscheduleworkitemex
+    # HRESULT MFScheduleWorkItemEx(
+    #     IMFAsyncResult *pResult, # [in]
+    #     INT64          Timeout,  # [in]
+    #     MFWORKITEM_KEY *pKey     # [out]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattribute2uint32asuint64
+    # HRESULT MFSetAttribute2UINT32asUINT64(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT32        unHigh32,     # [in]
+    #     UINT32        unLow32       # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattributeratio
+    # HRESULT MFSetAttributeRatio(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT32        unNumerator,  # [in]
+    #     UINT32        unDenominator # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattributesize
+    # HRESULT MFSetAttributeSize(
+    #     IMFAttributes *pAttributes, # [in]
+    #     REFGUID       guidKey,      # [in]
+    #     UINT32        unWidth,      # [in]
+    #     UINT32        unHeight      # [in]
+    #     )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfshutdown
+    HRESULT MFShutdown()
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsplitsample
+    # HRESULT MFSplitSample(
+    #     IMFSample *pSample,
+    #     IMFSample **pOutputSamples,
+    #     DWORD     dwOutputSampleMaxCount,
+    #     DWORD     *pdwOutputSampleCount
+    #     )
+
+    int MF_SDK_VERSION
+    int MF_API_VERSION
+    int MF_VERSION
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfstartup
+    HRESULT MFStartup(
+        ULONG Version,
+        DWORD dwFlags
+        )

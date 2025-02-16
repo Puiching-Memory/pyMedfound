@@ -16,24 +16,11 @@ ext_modules = [
         #extra_compile_args=["/openmp"],  # only for Windows 
         #extra_compile_args=["/D_M_AMD64","/D_WIN64"], # https://learn.microsoft.com/zh-cn/cpp/preprocessor/predefined-macros?view=msvc-170
         language="c++",
-        language_level=3,
-    ),
-    Extension(
-        "pyMedfound.mfobjects",
-        sources=["./src/pyMedfound/mfobjects.pyx"],
-        include_dirs=[np.get_include()], 
-        #library_dirs=["./libde265/build/libde265/Release/"], 
-        libraries=["dxva2","evr","mf","mfplat","mfplay","mfreadwrite","mfuuid"], # https://learn.microsoft.com/en-us/windows/win32/medfound/media-foundation-headers-and-libraries
-        #extra_compile_args=["/openmp"],  # only for Windows 
-        #extra_compile_args=["/D_M_AMD64","/D_WIN64"], # https://learn.microsoft.com/zh-cn/cpp/preprocessor/predefined-macros?view=msvc-170
-        language="c++", 
-        language_level=3,
     ),
     Extension(
         "pyMedfound.winsdkver",
         sources=["./src/pyMedfound/winsdkver.pyx"],
         language="c++",
-        language_level=3,
         ),
 ]
 
