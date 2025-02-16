@@ -1,5 +1,4 @@
 #cython:language_level=3
-from libc.stdint cimport int64_t
 
 cdef extern from "windows.h":
     # must be included before other Windows headers
@@ -8,6 +7,7 @@ cdef extern from "windows.h":
 cdef extern from "windef.h": # --> "minwindef.h"
     # https://learn.microsoft.com/en-us/windows/win32/learnwin32/windows-coding-conventions
     # https://learn.microsoft.com/en-us/openspecs/windows_protocols/ms-dtyp/cca27429-5689-4a16-b2b4-9325d93e4ba2
+    # https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
     # NOTE: LP means far pointer, P means near pointer
     ctypedef unsigned short wchar_t
     ctypedef void* ADCONNECTION_HANDLE

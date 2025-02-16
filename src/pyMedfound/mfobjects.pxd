@@ -1,9 +1,10 @@
-from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID,LPCWSTR
+from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID,LPCWSTR,ULONG,QWORD,UINT
 from pyMedfound.Winerror cimport HRESULT
 from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
 from pyMedfound.Unknwn cimport IUnknown
 from pyMedfound.PropIdlBase cimport PROPVARIANT,REFPROPVARIANT
 from pyMedfound.wtypes cimport VT_UI4,VT_UI8,VT_R8,VT_CLSID,VT_LPWSTR,VT_UNKNOWN
+from pyMedfound.winnt cimport HANDLE
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/
 cdef extern from "mfobjects.h":
@@ -296,18 +297,206 @@ cdef extern from "mfobjects.h":
         HRESULT ShutdownObject()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfaudiomediatype
+    # !Deprecated since Windows 7!
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfbytestream
+    cdef cppclass IMFByteStream(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-beginread
+        HRESULT BeginRead(
+            BYTE             *pb,        # [in]
+            ULONG            cb,         # [in]
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-beginwrite
+        HRESULT BeginWrite(
+            const BYTE       *pb,        # [in]
+            ULONG            cb,         # [in]
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-close
+        HRESULT Close()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-endread
+        HRESULT EndRead(
+            IMFAsyncResult *pResult, # [in]
+            ULONG          *pcbRead  # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-endwrite
+        HRESULT EndWrite(
+            IMFAsyncResult *pResult,   # [in]
+            ULONG          *pcbWritten # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-flush
+        HRESULT Flush()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-getcapabilities
+        HRESULT GetCapabilities(
+            DWORD *pdwCapabilities # [out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-getcurrentposition
+        HRESULT GetCurrentPosition(
+            QWORD *pqwPosition # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-getlength
+        HRESULT GetLength(
+            QWORD *pqwLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-isendofstream
+        HRESULT IsEndOfStream(
+            BOOL *pfEndOfStream # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-read
+        HRESULT Read(
+            BYTE  *pb,     # [in]
+            ULONG cb,      # [in]
+            ULONG *pcbRead # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-seek
+        HRESULT Seek(
+            MFBYTESTREAM_SEEK_ORIGIN SeekOrigin,         # [in]
+            LONGLONG                 llSeekOffset,       # [in]
+            DWORD                    dwSeekFlags,        # [in]
+            QWORD                    *pqwCurrentPosition # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-setcurrentposition
+        HRESULT SetCurrentPosition(
+            QWORD qwPosition # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-setlength
+        HRESULT SetLength(
+            QWORD qwLength # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-write
+        HRESULT Write(
+            const BYTE *pb,        # [in]
+            ULONG      cb,         # [in]
+            ULONG      *pcbWritten # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfbytestreamproxyclassfactory
+    cdef cppclass IMFByteStreamProxyClassFactory(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestreamproxyclassfactory-createbytestreamproxy
+        HRESULT CreateByteStreamProxy(
+            IMFByteStream *pByteStream, # [in]
+            IMFAttributes *pAttributes, # [in]
+            REFIID        riid,         # [in]
+            LPVOID        *ppvObject    # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfcollection
+    cdef cppclass IMFCollection(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-addelement
+        HRESULT AddElement(
+            IUnknown *pUnkElement # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-getelement
+        HRESULT GetElement(
+            DWORD    dwElementIndex, # [in]
+            IUnknown **ppUnkElement  # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-getelementcount
+        HRESULT GetElementCount(
+            DWORD *pcElements # [out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-insertelementat
+        HRESULT InsertElementAt(
+            DWORD    dwIndex,  # [in]
+            IUnknown *pUnknown # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-removeallelements
+        HRESULT RemoveAllElements()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfcollection-removeelement
+        HRESULT RemoveElement(
+            DWORD    dwElementIndex, # [in]
+            IUnknown **ppUnkElement  # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfdxgibuffer
+    cdef cppclass IMFDXGIBuffer(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgibuffer-getresource
+        HRESULT GetResource(
+            REFIID riid,      # [in]
+            LPVOID *ppvObject # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgibuffer-getunknown
+        HRESULT GetUnknown(
+            REFIID guid,      # [in]
+            REFIID riid,      # [in]
+            LPVOID *ppvObject # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgibuffer-setunknown
+        HRESULT SetUnknown(
+            REFIID   guid,     # [in]
+            IUnknown *pUnkData # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfdxgidevicemanager
+    cdef cppclass IMFDXGIDeviceManager(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-closedevicehandle
+        HRESULT CloseDeviceHandle(
+            HANDLE hDevice # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-getvideoservice
+        HRESULT GetVideoService(
+            HANDLE hDevice,    # [in]
+            REFIID riid,       # [in]
+            void   **ppService # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-lockdevice
+        HRESULT LockDevice(
+            HANDLE hDevice,       # [in]
+            REFIID riid,          # [in]
+            void   **ppUnkDevice, # [out]
+            BOOL   fBlock         # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-opendevicehandle
+        HRESULT OpenDeviceHandle(
+            HANDLE *phDevice # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-resetdevice
+        HRESULT ResetDevice(
+            IUnknown *pUnkDevice, # [in]
+            UINT     resetToken   # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-testdevice
+        HRESULT TestDevice(
+            HANDLE hDevice # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfdxgidevicemanager-unlockdevice
+        HRESULT UnlockDevice(
+            HANDLE hDevice,   # [in]
+            BOOL   fSaveState # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediabuffer
+    cdef cppclass IMFMediaBuffer(IUnknown):
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaevent
 
