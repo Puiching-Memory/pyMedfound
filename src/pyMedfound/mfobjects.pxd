@@ -573,9 +573,79 @@ cdef extern from "mfobjects.h":
         #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventqueue
+    cdef cppclass IMFMediaEventQueue(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-begingetevent
+        HRESULT BeginGetEvent(
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-endgetevent
+        HRESULT EndGetEvent(
+            IMFAsyncResult *pResult, # [in]
+            IMFMediaEvent  **ppEvent # [out]
+            ) 
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-getevent
+        HRESULT GetEvent(
+            DWORD         dwFlags,  # [in]
+            IMFMediaEvent **ppEvent # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-queueevent
+        HRESULT QueueEvent(
+            IMFMediaEvent *pEvent # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-queueeventparamunk
+        # HRESULT QueueEventParamUnk(
+        #     MediaEventType met,              # [in]
+        #     REFGUID        guidExtendedType, # [in]
+        #     HRESULT        hrStatus,         # [in]
+        #     IUnknown       *pUnk             # [in]
+        #     )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-queueeventparamvar
+        # HRESULT QueueEventParamVar(
+        #     MediaEventType    met,              # [in]
+        #     REFGUID           guidExtendedType, # [in]
+        #     HRESULT           hrStatus,         # [in]
+        #     const PROPVARIANT *pvValue          # [in]
+        #     )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-shutdown
+        HRESULT Shutdown()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediatype
+    cdef cppclass IMFMediaType(IMFAttributes):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediatype-freerepresentation
+        HRESULT FreeRepresentation(
+            GUID   guidRepresentation, # [in]
+            LPVOID pvRepresentation    # [in]
+            )
 
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediatype-getmajortype
+        HRESULT GetMajorType(
+            GUID *pguidMajorType # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediatype-getrepresentation
+        HRESULT GetRepresentation(
+            GUID   guidRepresentation, # [in]
+            LPVOID *ppvRepresentation  # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediatype-iscompressedformat
+        HRESULT IsCompressedFormat(
+            BOOL *pfCompressed # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediatype-isequal
+        HRESULT IsEqual(
+            IMFMediaType *pIMediaType, # [in]
+            DWORD        *pdwFlags     # [out]
+            )
+            
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamattributesmanager
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreammediatypemanager
