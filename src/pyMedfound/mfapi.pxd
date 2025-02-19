@@ -1,9 +1,10 @@
 # cython: language_level=3
 
-from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT,UINT8,LPDWORD,LPWSTR,ULONG,LONGLONG,INT64
+from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT,UINT8,LPDWORD,LPWSTR,ULONG,LONGLONG,INT64,LPCWSTR
 from pyMedfound.Winerror cimport HRESULT
 from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
 from pyMedfound.Unknwn cimport IUnknown
+from pyMedfound.mfobjects cimport MF_FILE_ACCESSMODE,MF_FILE_OPENMODE,MF_FILE_FLAGS,IMFAsyncCallback
 
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/
@@ -85,17 +86,17 @@ cdef extern from "mfapi.h":
         DWORD *pdwWorkQueue
         )
     
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfallocateworkqueueex
-    # HRESULT MFAllocateWorkQueueEx(
-    #     MFASYNC_WORKQUEUE_TYPE WorkQueueType,
-    #     DWORD                  *pdwWorkQueue
-    #     )
-
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfasync_workqueue_type
     ctypedef enum MFASYNC_WORKQUEUE_TYPE:
         MF_STANDARD_WORKQUEUE = 0
         MF_WINDOW_WORKQUEUE = 1
         MF_MULTITHREADED_WORKQUEUE = 2
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfallocateworkqueueex
+    HRESULT MFAllocateWorkQueueEx(
+        MFASYNC_WORKQUEUE_TYPE WorkQueueType,
+        DWORD                  *pdwWorkQueue
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mfasyncresult
     # ctypedef struct tagMFASYNCRESULT : IMFAsyncResult {
@@ -114,57 +115,57 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfbegincreatefile
-    # HRESULT MFBeginCreateFile(
-    #     MF_FILE_ACCESSMODE AccessMode,
-    #     MF_FILE_OPENMODE   OpenMode,
-    #     MF_FILE_FLAGS      fFlags,
-    #     LPCWSTR            pwszFilePath,
-    #     IMFAsyncCallback   *pCallback,
-    #     IUnknown           *pState,
-    #     IUnknown           **ppCancelCookie
-    #     )
+    HRESULT MFBeginCreateFile(
+        MF_FILE_ACCESSMODE AccessMode,
+        MF_FILE_OPENMODE   OpenMode,
+        MF_FILE_FLAGS      fFlags,
+        LPCWSTR            pwszFilePath,
+        IMFAsyncCallback   *pCallback,
+        IUnknown           *pState,
+        IUnknown           **ppCancelCookie
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfbeginregisterworkqueuewithmmcss
-    # HRESULT MFBeginRegisterWorkQueueWithMMCSS(
-    #     DWORD            dwWorkQueueId,
-    #     LPCWSTR          wszClass,
-    #     DWORD            dwTaskId,
-    #     IMFAsyncCallback *pDoneCallback,
-    #     IUnknown         *pDoneState
-    #     )
+    HRESULT MFBeginRegisterWorkQueueWithMMCSS(
+        DWORD            dwWorkQueueId,
+        LPCWSTR          wszClass,
+        DWORD            dwTaskId,
+        IMFAsyncCallback *pDoneCallback,
+        IUnknown         *pDoneState
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfbeginregisterworkqueuewithmmcssex
-    # HRESULT MFBeginRegisterWorkQueueWithMMCSSEx(
-    #     DWORD            dwWorkQueueId,
-    #     LPCWSTR          wszClass,
-    #     DWORD            dwTaskId,
-    #     LONG             lPriority,
-    #     IMFAsyncCallback *pDoneCallback,
-    #     IUnknown         *pDoneState
-    #     )
+    HRESULT MFBeginRegisterWorkQueueWithMMCSSEx(
+        DWORD            dwWorkQueueId,
+        LPCWSTR          wszClass,
+        DWORD            dwTaskId,
+        LONG             lPriority,
+        IMFAsyncCallback *pDoneCallback,
+        IUnknown         *pDoneState
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfbeginunregisterworkqueuewithmmcss
-    # HRESULT MFBeginUnregisterWorkQueueWithMMCSS(
-    # DWORD            dwWorkQueueId,
-    # IMFAsyncCallback *pDoneCallback,
-    # Unknown         *pDoneState
-    # )
+    HRESULT MFBeginUnregisterWorkQueueWithMMCSS(
+        DWORD            dwWorkQueueId,  # [in]
+        IMFAsyncCallback *pDoneCallback, # [in]
+        IUnknown         *pDoneState     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcalculatebitmapimagesize
     # HRESULT MFCalculateBitmapImageSize(
-    # const BITMAPINFOHEADER *pBMIH,
-    # UINT32                 cbBufSize,
-    # UINT32                 *pcbImageSize,
-    # BOOL                   *pbKnown
-    # )
+    #     const BITMAPINFOHEADER *pBMIH,
+    #     UINT32                 cbBufSize,
+    #     UINT32                 *pcbImageSize,
+    #     BOOL                   *pbKnown
+    #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcalculateimagesize
-    # HRESULT MFCalculateImageSize(
-    #     REFGUID guidSubtype,
-    #     UINT32  unWidth,
-    #     UINT32  unHeight,
-    #     UINT32  *pcbImageSize
-    #     )
+    HRESULT MFCalculateImageSize(
+        REFGUID guidSubtype,
+        UINT32  unWidth,
+        UINT32  unHeight,
+        UINT32  *pcbImageSize
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mfcameraextrinsic_calibratedtransform
     ctypedef struct MFCameraExtrinsic_CalibratedTransform:
