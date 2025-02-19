@@ -535,9 +535,9 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-gettype
-        HRESULT GetType(
-            MediaEventType *pmet # [out]
-        )
+        # HRESULT GetType(
+        #     MediaEventType *pmet # [out]
+        # )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-getvalue
         HRESULT GetValue(
@@ -565,12 +565,12 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-queueevent
-        HRESULT QueueEvent(
-            MediaEventType    met,              # [in]
-            REFGUID           guidExtendedType, # [in]
-            HRESULT           hrStatus,         # [in]
-            const PROPVARIANT *pvValue          # [in]
-            )
+        # HRESULT QueueEvent(
+        #     MediaEventType    met,              # [in]
+        #     REFGUID           guidExtendedType, # [in]
+        #     HRESULT           hrStatus,         # [in]
+        #     const PROPVARIANT *pvValue          # [in]
+        #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventqueue
 
