@@ -15,3 +15,5 @@ cdef extern from "guiddef.h":
     ctypedef const IID* REFIID
     
     ctypedef GUID* REFGUID
+    ctypedef GUID CLSID
+    ctypedef GUID* REFCLSID
