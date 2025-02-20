@@ -1,11 +1,13 @@
 # cython: language_level=3
 
-from pyMedfound.WinDef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT,UINT8,LPDWORD,LPWSTR,ULONG,LONGLONG,INT64,LPCWSTR
-from pyMedfound.Winerror cimport HRESULT
-from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
-from pyMedfound.Unknwn cimport IUnknown
-from pyMedfound.mfobjects cimport MF_FILE_ACCESSMODE,MF_FILE_OPENMODE,MF_FILE_FLAGS,IMFAsyncCallback
-
+from pyMedfound.windef cimport INT32,UINT32,INT16,FLOAT,DWORD,UINT64,BOOL,WORD,BYTE,LONG,UINT,UINT8,LPDWORD,LPWSTR,ULONG,LONGLONG,INT64,LPCWSTR,PWSTR,PCWSTR,LPVOID,RECT
+from pyMedfound.winerror cimport HRESULT
+from pyMedfound.guiddef cimport GUID,REFIID,REFGUID,CLSID,REFCLSID
+from pyMedfound.unknwn cimport IUnknown,IClassFactory
+from pyMedfound.mfobjects cimport MF_FILE_ACCESSMODE,MF_FILE_OPENMODE,MF_FILE_FLAGS,IMFAsyncCallback,MFT_REGISTER_TYPE_INFO,IMFActivate,IMFAsyncResult,IMFAttributes,IMFMediaType,IMFSample,IMFMediaBuffer,IMFCollection,IMFByteStream,IMFMediaEvent,IMFVideoMediaType,IMFPluginControl,MediaEventType
+from pyMedfound.strmif cimport AM_MEDIA_TYPE
+from pyMedfound.PropIdlBase cimport PROPVARIANT
+from pyMedfound.mmeapi cimport WAVEFORMATEX
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/
 cdef extern from "mfapi.h":
@@ -202,18 +204,18 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcombinesamples
-    # HRESULT MFCombineSamples(
-    #     IMFSample *pSample,
-    #     IMFSample *pSampleToAdd,
-    #     DWORD     dwMaxMergedDurationInMS,
-    #     BOOL      *pMerged
-    #     )
+    HRESULT MFCombineSamples(
+        IMFSample *pSample,
+        IMFSample *pSampleToAdd,
+        DWORD     dwMaxMergedDurationInMS,
+        BOOL      *pMerged
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcomparefulltopartialmediatype
-    # BOOL MFCompareFullToPartialMediaType(
-    #     IMFMediaType *pMFTypeFull,
-    #     IMFMediaType *pMFTypePartial
-    #     )
+    BOOL MFCompareFullToPartialMediaType(
+        IMFMediaType *pMFTypeFull,
+        IMFMediaType *pMFTypePartial
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfconvertcolorinfofromdxva
     # !Deprecated!
@@ -254,41 +256,41 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreate2dmediabuffer
-    # HRESULT MFCreate2DMediaBuffer(
-    #     DWORD          dwWidth,
-    #     DWORD          dwHeight,
-    #     DWORD          dwFourCC,
-    #     BOOL           fBottomUp,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreate2DMediaBuffer(
+        DWORD          dwWidth,
+        DWORD          dwHeight,
+        DWORD          dwFourCC,
+        BOOL           fBottomUp,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatealignedmemorybuffer
-    # HRESULT MFCreateAlignedMemoryBuffer(
-    #     DWORD          cbMaxLength,
-    #     DWORD          cbAligment,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateAlignedMemoryBuffer(
+        DWORD          cbMaxLength,
+        DWORD          cbAligment,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreateammediatypefrommfmediatype
-    # HRESULT MFCreateAMMediaTypeFromMFMediaType(
-    #     IMFMediaType  *pMFType,
-    #     GUID          guidFormatBlockType,
-    #     AM_MEDIA_TYPE **ppAMType
-    #     )
+    HRESULT MFCreateAMMediaTypeFromMFMediaType(
+        IMFMediaType  *pMFType,
+        GUID          guidFormatBlockType,
+        AM_MEDIA_TYPE **ppAMType
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreateasyncresult
-    # HRESULT MFCreateAsyncResult(
-    #     IUnknown         *punkObject,
-    #     IMFAsyncCallback *pCallback,
-    #     IUnknown         *punkState,
-    #     IMFAsyncResult   **ppAsyncResult
-    #     )
+    HRESULT MFCreateAsyncResult(
+        IUnknown         *punkObject,
+        IMFAsyncCallback *pCallback,
+        IUnknown         *punkState,
+        IMFAsyncResult   **ppAsyncResult
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreateattributes
-    # HRESULT MFCreateAttributes(
-    #     IMFAttributes **ppMFAttributes,
-    #     UINT32        cInitialSize
-    #     )
+    HRESULT MFCreateAttributes(
+        IMFAttributes **ppMFAttributes,
+        UINT32        cInitialSize
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreateaudiomediatype
     # !Deprecated!
@@ -298,9 +300,9 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatecollection
-    # HRESULT MFCreateCollection(
-    #     IMFCollection **ppIMFCollection
-    #     )
+    HRESULT MFCreateCollection(
+        IMFCollection **ppIMFCollection
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatedxgidevicemanager
     # HRESULT MFCreateDXGIDeviceManager(
@@ -309,21 +311,21 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatedxgisurfacebuffer
-    # HRESULT MFCreateDXGISurfaceBuffer(
-    #     REFIID         riid,
-    #     IUnknown       *punkSurface,
-    #     UINT           uSubresourceIndex,
-    #     BOOL           fBottomUpWhenLinear,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateDXGISurfaceBuffer(
+        REFIID         riid,
+        IUnknown       *punkSurface,
+        UINT           uSubresourceIndex,
+        BOOL           fBottomUpWhenLinear,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatedxsurfacebuffer
-    # HRESULT MFCreateDXSurfaceBuffer(
-    #     REFIID         riid,
-    #     IUnknown       *punkSurface,
-    #     BOOL           fBottomUpWhenLinear,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateDXSurfaceBuffer(
+        REFIID         riid,
+        IUnknown       *punkSurface,
+        BOOL           fBottomUpWhenLinear,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreateeventqueue
     # HRESULT MFCreateEventQueue(
@@ -331,79 +333,79 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatefile
-    # HRESULT MFCreateFile(
-    #     MF_FILE_ACCESSMODE AccessMode,
-    #     MF_FILE_OPENMODE   OpenMode,
-    #     MF_FILE_FLAGS      fFlags,
-    #     LPCWSTR            pwszFileURL,
-    #     IMFByteStream      **ppIByteStream
-    #     )
+    HRESULT MFCreateFile(
+        MF_FILE_ACCESSMODE AccessMode,
+        MF_FILE_OPENMODE   OpenMode,
+        MF_FILE_FLAGS      fFlags,
+        LPCWSTR            pwszFileURL,
+        IMFByteStream      **ppIByteStream
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatelegacymediabufferonmfmediabuffer
-    # HRESULT MFCreateLegacyMediaBufferOnMFMediaBuffer(
-    #     IMFSample      *pSample,
-    #     IMFMediaBuffer *pMFMediaBuffer,
-    #     DWORD          cbOffset,
-    #     IMediaBuffer   **ppMediaBuffer
-    #     )
+    HRESULT MFCreateLegacyMediaBufferOnMFMediaBuffer(
+        IMFSample      *pSample,
+        IMFMediaBuffer *pMFMediaBuffer,
+        DWORD          cbOffset,
+        IMFMediaBuffer   **ppMediaBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediabufferfrommediatype
-    # HRESULT MFCreateMediaBufferFromMediaType(
-    #     IMFMediaType   *pMediaType,
-    #     LONGLONG       llDuration,
-    #     DWORD          dwMinLength,
-    #     DWORD          dwMinAlignment,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateMediaBufferFromMediaType(
+        IMFMediaType   *pMediaType,
+        LONGLONG       llDuration,
+        DWORD          dwMinLength,
+        DWORD          dwMinAlignment,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediabufferwrapper
-    # HRESULT MFCreateMediaBufferWrapper(
-    #     IMFMediaBuffer *pBuffer,
-    #     DWORD          cbOffset,
-    #     DWORD          dwLength,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateMediaBufferWrapper(
+        IMFMediaBuffer *pBuffer,
+        DWORD          cbOffset,
+        DWORD          dwLength,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediaevent
-    # HRESULT MFCreateMediaEvent(
-    #     MediaEventType    met,
-    #     REFGUID           guidExtendedType,
-    #     HRESULT           hrStatus,
-    #     const PROPVARIANT *pvValue,
-    #     IMFMediaEvent     **ppEvent
-    #     )
+    HRESULT MFCreateMediaEvent(
+        MediaEventType    met,
+        REFGUID           guidExtendedType,
+        HRESULT           hrStatus,
+        const PROPVARIANT *pvValue,
+        IMFMediaEvent     **ppEvent
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediaextensionactivate
-    # HRESULT MFCreateMediaExtensionActivate(
-    #     PCWSTR   szActivatableClassId,
-    #     IUnknown *pConfiguration,
-    #     REFIID   riid,
-    #     LPVOID   *ppvObject
-    #     )
+    HRESULT MFCreateMediaExtensionActivate(
+        PCWSTR   szActivatableClassId,
+        IUnknown *pConfiguration,
+        REFIID   riid,
+        LPVOID   *ppvObject
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediatype
-    # HRESULT MFCreateMediaType(
-    # IMFMediaType **ppMFType
-    # )
+    HRESULT MFCreateMediaType(
+        IMFMediaType **ppMFType
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemediatypefromrepresentation
-    # HRESULT MFCreateMediaTypeFromRepresentation(
-    #     GUID         guidRepresentation, # [in]
-    #     LPVOID       pvRepresentation,   # [in]
-    #     IMFMediaType **ppIMediaType      # [out]
-    #     )
+    HRESULT MFCreateMediaTypeFromRepresentation(
+        GUID         guidRepresentation, # [in]
+        LPVOID       pvRepresentation,   # [in]
+        IMFMediaType **ppIMediaType      # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatememorybuffer
-    # HRESULT MFCreateMemoryBuffer(
-    #     DWORD          cbMaxLength,
-    #     IMFMediaBuffer **ppBuffer
-    #     )
+    HRESULT MFCreateMemoryBuffer(
+        DWORD          cbMaxLength,
+        IMFMediaBuffer **ppBuffer
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemfbytestreamwrapper
-    # HRESULT MFCreateMFByteStreamWrapper(
-    #     IMFByteStream *pStream,         # [in]
-    #     IMFByteStream **ppStreamWrapper # [in]
-    #     )
+    HRESULT MFCreateMFByteStreamWrapper(
+        IMFByteStream *pStream,         # [in]
+        IMFByteStream **ppStreamWrapper # [in]
+        )
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemfvideoformatfrommfmediatype
     # !Deprecated!
@@ -414,35 +416,35 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreamattributes
-    # HRESULT MFCreateMuxStreamAttributes(
-    #     IMFCollection *pAttributesToMux, # [in]
-    #     IMFAttributes **ppMuxAttribs     # [out]
-    #     )
+    HRESULT MFCreateMuxStreamAttributes(
+        IMFCollection *pAttributesToMux, # [in]
+        IMFAttributes **ppMuxAttribs     # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreammediatype
-    # HRESULT MFCreateMuxStreamMediaType(
-    #     IMFCollection *pMediaTypesToMux, # [in]
-    #     IMFMediaType  **ppMuxMediaType   # [out]
-    #     )
+    HRESULT MFCreateMuxStreamMediaType(
+        IMFCollection *pMediaTypesToMux, # [in]
+        IMFMediaType  **ppMuxMediaType   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatemuxstreamsample
-    # HRESULT MFCreateMuxStreamSample(
-    #     IMFCollection *pSamplesToMux, # [in]
-    #     IMFSample     **ppMuxSample   # [out]
-    #     )
+    HRESULT MFCreateMuxStreamSample(
+        IMFCollection *pSamplesToMux, # [in]
+        IMFSample     **ppMuxSample   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatesample
-    # HRESULT MFCreateSample(
-    #     IMFSample **ppIMFSample
-    #     )
+    HRESULT MFCreateSample(
+        IMFSample **ppIMFSample
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatetempfile
-    # HRESULT MFCreateTempFile(
-    #     MF_FILE_ACCESSMODE AccessMode,
-    #     MF_FILE_OPENMODE   OpenMode,
-    #     MF_FILE_FLAGS      fFlags,
-    #     IMFByteStream      **ppIByteStream
-    #     )
+    HRESULT MFCreateTempFile(
+        MF_FILE_ACCESSMODE AccessMode,
+        MF_FILE_OPENMODE   OpenMode,
+        MF_FILE_FLAGS      fFlags,
+        IMFByteStream      **ppIByteStream
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatype
     # !Deprecated!
@@ -469,10 +471,10 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefromsubtype
-    # HRESULT MFCreateVideoMediaTypeFromSubtype(
-    #     const GUID        *pAMSubtype,        # [in]
-    #     IMFVideoMediaType **ppIVideoMediaType # [out]
-    #     )
+    HRESULT MFCreateVideoMediaTypeFromSubtype(
+        const GUID        *pAMSubtype,        # [in]
+        IMFVideoMediaType **ppIVideoMediaType # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatevideomediatypefromvideoinfoheader
     # HRESULT MFCreateVideoMediaTypeFromVideoInfoHeader(
@@ -502,19 +504,19 @@ cdef extern from "mfapi.h":
         )
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatewaveformatexfrommfmediatype
-    # HRESULT MFCreateWaveFormatExFromMFMediaType(
-    #     IMFMediaType *pMFType,
-    #     WAVEFORMATEX **ppWF,
-    #     UINT32       *pcbSize,
-    #     UINT32       Flags
-    #     )
+    HRESULT MFCreateWaveFormatExFromMFMediaType(
+        IMFMediaType *pMFType,
+        WAVEFORMATEX **ppWF,
+        UINT32       *pcbSize,
+        UINT32       Flags
+        )
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfcreatewicbitmapbuffer
-    # HRESULT MFCreateWICBitmapBuffer(
-    #     REFIID         riid,         # [in]
-    #     IUnknown       *punkSurface, # [in]
-    #     IMFMediaBuffer **ppBuffer    # [out]
-    #     )
+    HRESULT MFCreateWICBitmapBuffer(
+        REFIID         riid,         # [in]
+        IUnknown       *punkSurface, # [in]
+        IMFMediaBuffer **ppBuffer    # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ne-mfapi-mfdepthmeasurement
     ctypedef enum MFDepthMeasurement:
@@ -522,21 +524,21 @@ cdef extern from "mfapi.h":
         DistanceToOpticalCenter = 1
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendcreatefile
-    # HRESULT MFEndCreateFile(
-    #     IMFAsyncResult *pResult, # [in]
-    #     IMFByteStream  **ppFile  # [out]
-    #     )
+    HRESULT MFEndCreateFile(
+        IMFAsyncResult *pResult, # [in]
+        IMFByteStream  **ppFile  # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendregisterworkqueuewithmmcss
-    # HRESULT MFEndRegisterWorkQueueWithMMCSS(
-    #     IMFAsyncResult *pResult,  # [in]
-    #     DWORD          *pdwTaskId # [in]
-    #     )
+    HRESULT MFEndRegisterWorkQueueWithMMCSS(
+        IMFAsyncResult *pResult,  # [in]
+        DWORD          *pdwTaskId # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfendunregisterworkqueuewithmmcss
-    # HRESULT MFEndUnregisterWorkQueueWithMMCSS(
-    #     IMFAsyncResult *pResult # [in]
-    #     )
+    HRESULT MFEndUnregisterWorkQueueWithMMCSS(
+        IMFAsyncResult *pResult # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mffolddown_matrix
     ctypedef struct MFFOLDDOWN_MATRIX:
@@ -562,75 +564,75 @@ cdef extern from "mfapi.h":
         MFFrameSourceTypes_Custom = 0x0080
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattribute2uint32asuint64
-    # HRESULT MFGetAttribute2UINT32asUINT64(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [out]
-    #     UINT32        *punHigh32,   # [out]
-    #     UINT32        *punLow32     # [out]
-    #     )
+    HRESULT MFGetAttribute2UINT32asUINT64(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [out]
+        UINT32        *punHigh32,   # [out]
+        UINT32        *punLow32     # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributedouble
-    # double MFGetAttributeDouble(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     double        fDefault      # [in]
-    #     )
+    double MFGetAttributeDouble(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        double        fDefault      # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeratio
-    # HRESULT MFGetAttributeRatio(
-    #     IMFAttributes *pAttributes,   # [in]
-    #     REFGUID       guidKey,        # [in]
-    #     UINT32        *punNumerator,  # [out]
-    #     UINT32        *punDenominator # [out]
-    #     )
+    HRESULT MFGetAttributeRatio(
+        IMFAttributes *pAttributes,   # [in]
+        REFGUID       guidKey,        # [in]
+        UINT32        *punNumerator,  # [out]
+        UINT32        *punDenominator # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesasblob
-    # HRESULT MFGetAttributesAsBlob(
-    #     IMFAttributes *pAttributes, # [in]
-    #     UINT8         *pBuf,        # [out]
-    #     UINT          cbBufSize     # [in]
-    #     )
+    HRESULT MFGetAttributesAsBlob(
+        IMFAttributes *pAttributes, # [in]
+        UINT8         *pBuf,        # [out]
+        UINT          cbBufSize     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesasblobsize
-    # HRESULT MFGetAttributesAsBlobSize(
-    #     IMFAttributes *pAttributes, # [in]
-    #     UINT32        *pcbBufSize   # [out]
-    #     )
+    HRESULT MFGetAttributesAsBlobSize(
+        IMFAttributes *pAttributes, # [in]
+        UINT32        *pcbBufSize   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributesize
-    # HRESULT MFGetAttributeSize(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT32        *punWidth,    # [out]
-    #     UINT32        *punHeight    # [out]
-    #     )
+    HRESULT MFGetAttributeSize(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT32        *punWidth,    # [out]
+        UINT32        *punHeight    # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributestring
-    # HRESULT MFGetAttributeString(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     PWSTR         *ppsz         # [out]
-    #     )
+    HRESULT MFGetAttributeString(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        PWSTR         *ppsz         # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeuint32
-    # UINT32 MFGetAttributeUINT32(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT32        unDefault     # [in]
-    #     )
+    UINT32 MFGetAttributeUINT32(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT32        unDefault     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetattributeuint64
-    # UINT64 MFGetAttributeUINT64(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT64        unDefault     # [in]
-    #     )
+    UINT64 MFGetAttributeUINT64(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT64        unDefault     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetcontentprotectionsystemclsid
-    # HRESULT MFGetContentProtectionSystemCLSID(
-    #     REFGUID guidProtectionSystemID, # [in]
-    #     CLSID   *pclsid                 # [out]
-    #     )
+    HRESULT MFGetContentProtectionSystemCLSID(
+        REFGUID guidProtectionSystemID, # [in]
+        CLSID   *pclsid                 # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetmftmerit
     HRESULT MFGetMFTMerit(
@@ -649,9 +651,9 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetplugincontrol
-    # HRESULT MFGetPluginControl(
-    #     IMFPluginControl **ppPluginControl # [out]
-    #     )
+    HRESULT MFGetPluginControl(
+        IMFPluginControl **ppPluginControl # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfgetstrideforbitmapinfoheader
     HRESULT MFGetStrideForBitmapInfoHeader(
@@ -705,24 +707,24 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitammediatypefrommfmediatype
-    # HRESULT MFInitAMMediaTypeFromMFMediaType(
-    #     IMFMediaType  *pMFType,
-    #     GUID          guidFormatBlockType,
-    #     AM_MEDIA_TYPE *pAMType
-    #     )
+    HRESULT MFInitAMMediaTypeFromMFMediaType(
+        IMFMediaType  *pMFType,
+        GUID          guidFormatBlockType,
+        AM_MEDIA_TYPE *pAMType
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitattributesfromblob
-    # HRESULT MFInitAttributesFromBlob(
-    #     IMFAttributes *pAttributes, # [in]
-    #     const UINT8   *pBuf,        # [in]
-    #     UINT          cbBufSize     # [in]
-    #     )
+    HRESULT MFInitAttributesFromBlob(
+        IMFAttributes *pAttributes, # [in]
+        const UINT8   *pBuf,        # [in]
+        UINT          cbBufSize     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromammediatype
-    # HRESULT MFInitMediaTypeFromAMMediaType(
-    #     IMFMediaType        *pMFType,
-    #     const AM_MEDIA_TYPE *pAMType
-    #     )
+    HRESULT MFInitMediaTypeFromAMMediaType(
+        IMFMediaType        *pMFType,
+        const AM_MEDIA_TYPE *pAMType
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefrommfvideoformat
     # !Deprecated!
@@ -765,11 +767,11 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitmediatypefromwaveformatex
-    # HRESULT MFInitMediaTypeFromWaveFormatEx(
-    #     IMFMediaType       *pMFType,
-    #     const WAVEFORMATEX *pWaveFormat,
-    #     UINT32             cbBufSize
-    #     )
+    HRESULT MFInitMediaTypeFromWaveFormatEx(
+        IMFMediaType       *pMFType,
+        const WAVEFORMATEX *pWaveFormat,
+        UINT32             cbBufSize
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinitvideoformat
     # !Deprecated!
@@ -788,9 +790,9 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfinvokecallback
-    # HRESULT MFInvokeCallback(
-    #     IMFAsyncResult *pAsyncResult
-    #     )
+    HRESULT MFInvokeCallback(
+        IMFAsyncResult *pAsyncResult
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfisformatyuv
     BOOL MFIsFormatYUV(
@@ -815,12 +817,12 @@ cdef extern from "mfapi.h":
     HRESULT MFLockPlatform()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflocksharedworkqueue
-    # HRESULT MFLockSharedWorkQueue(
-    #     PCWSTR wszClass,     # [in]
-    #     LONG   BasePriority, # [in]
-    #     DWORD  *pdwTaskId,   # [in, out]
-    #     DWORD  *pID          # [out]
-    #     )
+    HRESULT MFLockSharedWorkQueue(
+        PCWSTR wszClass,     # [in]
+        LONG   BasePriority, # [in]
+        DWORD  *pdwTaskId,   # [in, out]
+        DWORD  *pID          # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mflockworkqueue
     HRESULT MFLockWorkQueue(
@@ -864,32 +866,32 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitem
-    # HRESULT MFPutWorkItem(
-    #     DWORD            dwQueue,    # [in]
-    #     IMFAsyncCallback *pCallback, # [in]
-    #     IUnknown         *pState     # [in]
-    #     )
+    HRESULT MFPutWorkItem(
+        DWORD            dwQueue,    # [in]
+        IMFAsyncCallback *pCallback, # [in]
+        IUnknown         *pState     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitem2
-    # HRESULT MFPutWorkItem2(
-    #     DWORD            dwQueue,    # [in]
-    #     LONG             Priority,   # [in]
-    #     IMFAsyncCallback *pCallback, # [in]
-    #     IUnknown         *pState     # [in]
-    #     )
+    HRESULT MFPutWorkItem2(
+        DWORD            dwQueue,    # [in]
+        LONG             Priority,   # [in]
+        IMFAsyncCallback *pCallback, # [in]
+        IUnknown         *pState     # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitemex
-    # HRESULT MFPutWorkItemEx(
-    #     DWORD          dwQueue, # [in]
-    #     IMFAsyncResult *pResult # [in]
-    #     )
+    HRESULT MFPutWorkItemEx(
+        DWORD          dwQueue, # [in]
+        IMFAsyncResult *pResult # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfputworkitemex2
-    # HRESULT MFPutWorkItemEx2(
-    #     DWORD          dwQueue,  # [in]
-    #     LONG           Priority, # [in]
-    #     IMFAsyncResult *pResult  # [in]
-    #     )
+    HRESULT MFPutWorkItemEx2(
+        DWORD          dwQueue,  # [in]
+        LONG           Priority, # [in]
+        IMFAsyncResult *pResult  # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfregisterlocalbytestreamhandler
     # HRESULT MFRegisterLocalByteStreamHandler(
@@ -938,39 +940,39 @@ cdef extern from "mfapi.h":
     #     )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattribute2uint32asuint64
-    # HRESULT MFSetAttribute2UINT32asUINT64(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT32        unHigh32,     # [in]
-    #     UINT32        unLow32       # [in]
-    #     )
+    HRESULT MFSetAttribute2UINT32asUINT64(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT32        unHigh32,     # [in]
+        UINT32        unLow32       # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattributeratio
-    # HRESULT MFSetAttributeRatio(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT32        unNumerator,  # [in]
-    #     UINT32        unDenominator # [in]
-    #     )
+    HRESULT MFSetAttributeRatio(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT32        unNumerator,  # [in]
+        UINT32        unDenominator # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsetattributesize
-    # HRESULT MFSetAttributeSize(
-    #     IMFAttributes *pAttributes, # [in]
-    #     REFGUID       guidKey,      # [in]
-    #     UINT32        unWidth,      # [in]
-    #     UINT32        unHeight      # [in]
-    #     )
+    HRESULT MFSetAttributeSize(
+        IMFAttributes *pAttributes, # [in]
+        REFGUID       guidKey,      # [in]
+        UINT32        unWidth,      # [in]
+        UINT32        unHeight      # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfshutdown
     HRESULT MFShutdown()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfsplitsample
-    # HRESULT MFSplitSample(
-    #     IMFSample *pSample,
-    #     IMFSample **pOutputSamples,
-    #     DWORD     dwOutputSampleMaxCount,
-    #     DWORD     *pdwOutputSampleCount
-    #     )
+    HRESULT MFSplitSample(
+        IMFSample *pSample,
+        IMFSample **pOutputSamples,
+        DWORD     dwOutputSampleMaxCount,
+        DWORD     *pdwOutputSampleCount
+        )
 
     int MF_SDK_VERSION
     int MF_API_VERSION
@@ -983,99 +985,99 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftenum
-    # HRESULT MFTEnum(
-    #     GUID                   guidCategory, # [in]
-    #     UINT32                 Flags,        # [in]
-    #     MFT_REGISTER_TYPE_INFO *pInputType,  # [in]
-    #     MFT_REGISTER_TYPE_INFO *pOutputType, # [in]
-    #     IMFAttributes          *pAttributes, # [in]
-    #     CLSID                  **ppclsidMFT, # [out]
-    #     UINT32                 *pcMFTs       # [out]
-    #     )
+    HRESULT MFTEnum(
+        GUID                   guidCategory, # [in]
+        UINT32                 Flags,        # [in]
+        MFT_REGISTER_TYPE_INFO *pInputType,  # [in]
+        MFT_REGISTER_TYPE_INFO *pOutputType, # [in]
+        IMFAttributes          *pAttributes, # [in]
+        CLSID                  **ppclsidMFT, # [out]
+        UINT32                 *pcMFTs       # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftenum2
-    # HRESULT MFTEnum2(
-    #     GUID                         guidCategory,      # [in] 
-    #     UINT32                       Flags,             # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pInputType,       # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pOutputType,      # [in]
-    #     IMFAttributes                *pAttributes,      # [in, optional]
-    #     IMFActivate                  ***pppMFTActivate, # [out]
-    #     UINT32                       *pnumMFTActivate   # [out]
-    #     )
+    HRESULT MFTEnum2(
+        GUID                         guidCategory,      # [in] 
+        UINT32                       Flags,             # [in]
+        const MFT_REGISTER_TYPE_INFO *pInputType,       # [in]
+        const MFT_REGISTER_TYPE_INFO *pOutputType,      # [in]
+        IMFAttributes                *pAttributes,      # [in, optional]
+        IMFActivate                  ***pppMFTActivate, # [out]
+        UINT32                       *pnumMFTActivate   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftenumex
-    # HRESULT MFTEnumEx(
-    #     GUID                         guidCategory,      # [in] 
-    #     UINT32                       Flags,             # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pInputType,       # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pOutputType,      # [in]
-    #     IMFActivate                  ***pppMFTActivate, # [out]
-    #     UINT32                       *pnumMFTActivate   # [out]
-    #     )
+    HRESULT MFTEnumEx(
+        GUID                         guidCategory,      # [in] 
+        UINT32                       Flags,             # [in]
+        const MFT_REGISTER_TYPE_INFO *pInputType,       # [in]
+        const MFT_REGISTER_TYPE_INFO *pOutputType,      # [in]
+        IMFActivate                  ***pppMFTActivate, # [out]
+        UINT32                       *pnumMFTActivate   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftgetinfo
-    # HRESULT MFTGetInfo(
-    #     CLSID                  clsidMFT,        # [in]
-    #     LPWSTR                 *pszName,        # [out]
-    #     MFT_REGISTER_TYPE_INFO **ppInputTypes,  # [out]
-    #     UINT32                 *pcInputTypes,   # [out]
-    #     MFT_REGISTER_TYPE_INFO **ppOutputTypes, # [out]
-    #     UINT32                 *pcOutputTypes,  # [out]
-    #     IMFAttributes          **ppAttributes   # [out]
-    #     )
+    HRESULT MFTGetInfo(
+        CLSID                  clsidMFT,        # [in]
+        LPWSTR                 *pszName,        # [out]
+        MFT_REGISTER_TYPE_INFO **ppInputTypes,  # [out]
+        UINT32                 *pcInputTypes,   # [out]
+        MFT_REGISTER_TYPE_INFO **ppOutputTypes, # [out]
+        UINT32                 *pcOutputTypes,  # [out]
+        IMFAttributes          **ppAttributes   # [out]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftregister
-    # HRESULT MFTRegister(
-    #     CLSID                  clsidMFT,      # [in]
-    #     GUID                   guidCategory,  # [in]
-    #     LPWSTR                 pszName,       # [in]
-    #     UINT32                 Flags,         # [in]
-    #     UINT32                 cInputTypes,   # [in]
-    #     MFT_REGISTER_TYPE_INFO *pInputTypes,  # [in]
-    #     UINT32                 cOutputTypes,  # [in]
-    #     MFT_REGISTER_TYPE_INFO *pOutputTypes, # [in]
-    #     IMFAttributes          *pAttributes   # [in]
-    #     )
+    HRESULT MFTRegister(
+        CLSID                  clsidMFT,      # [in]
+        GUID                   guidCategory,  # [in]
+        LPWSTR                 pszName,       # [in]
+        UINT32                 Flags,         # [in]
+        UINT32                 cInputTypes,   # [in]
+        MFT_REGISTER_TYPE_INFO *pInputTypes,  # [in]
+        UINT32                 cOutputTypes,  # [in]
+        MFT_REGISTER_TYPE_INFO *pOutputTypes, # [in]
+        IMFAttributes          *pAttributes   # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftregisterlocal
-    # HRESULT MFTRegisterLocal(
-    #     IClassFactory                *pClassFactory,  # [in]
-    #     REFGUID                      guidCategory,    # [in]
-    #     LPCWSTR                      pszName,         # [in]
-    #     UINT32                       Flags,           # [in]
-    #     UINT32                       cInputTypes,     # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pInputTypes,    # [in]
-    #     UINT32                       cOutputTypes,    # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pOutputTypes    # [in]
-    #     )
+    HRESULT MFTRegisterLocal(
+        IClassFactory                *pClassFactory,  # [in]
+        REFGUID                      guidCategory,    # [in]
+        LPCWSTR                      pszName,         # [in]
+        UINT32                       Flags,           # [in]
+        UINT32                       cInputTypes,     # [in]
+        const MFT_REGISTER_TYPE_INFO *pInputTypes,    # [in]
+        UINT32                       cOutputTypes,    # [in]
+        const MFT_REGISTER_TYPE_INFO *pOutputTypes    # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftregisterlocalbyclsid
-    # HRESULT MFTRegisterLocalByCLSID(
-    #     REFCLSID                     clisdMFT,     # [in]
-    #     REFGUID                      guidCategory, # [in]
-    #     LPCWSTR                      pszName,      # [in]
-    #     UINT32                       Flags,        # [in]
-    #     UINT32                       cInputTypes,  # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pInputTypes, # [in]
-    #     UINT32                       cOutputTypes, # [in]
-    #     const MFT_REGISTER_TYPE_INFO *pOutputTypes # [in]
-    #     )
+    HRESULT MFTRegisterLocalByCLSID(
+        REFCLSID                     clisdMFT,     # [in]
+        REFGUID                      guidCategory, # [in]
+        LPCWSTR                      pszName,      # [in]
+        UINT32                       Flags,        # [in]
+        UINT32                       cInputTypes,  # [in]
+        const MFT_REGISTER_TYPE_INFO *pInputTypes, # [in]
+        UINT32                       cOutputTypes, # [in]
+        const MFT_REGISTER_TYPE_INFO *pOutputTypes # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftunregister
-    # HRESULT MFTUnregister(
-    #     CLSID clsidMFT # [in]
-    #     )
+    HRESULT MFTUnregister(
+        CLSID clsidMFT # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftunregisterlocal
-    # HRESULT MFTUnregisterLocal(
-    #     IClassFactory *pClassFactory # [in]
-    #     )
+    HRESULT MFTUnregisterLocal(
+        IClassFactory *pClassFactory # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mftunregisterlocalbyclsid
-    # HRESULT MFTUnregisterLocalByCLSID(
-    #     CLSID clsidMFT # [in]
-    #     )
+    HRESULT MFTUnregisterLocalByCLSID(
+        CLSID clsidMFT # [in]
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfunlockdxgidevicemanager
     HRESULT MFUnlockDXGIDeviceManager()
@@ -1092,10 +1094,10 @@ cdef extern from "mfapi.h":
     HRESULT MFUnregisterPlatformFromMMCSS()
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfunwrapmediatype
-    # HRESULT MFUnwrapMediaType(
-    #     IMFMediaType *pWrap,
-    #     IMFMediaType **ppOrig
-    #     )
+    HRESULT MFUnwrapMediaType(
+        IMFMediaType *pWrap,
+        IMFMediaType **ppOrig
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfvalidatemediatypesize
     HRESULT MFValidateMediaTypeSize(
@@ -1147,12 +1149,12 @@ cdef extern from "mfapi.h":
         MFWaveFormatExConvertFlag_ForceExtensible = 1
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-mfwrapmediatype
-    # HRESULT MFWrapMediaType(
-    #     IMFMediaType *pOrig,
-    #     REFGUID      MajorType,
-    #     REFGUID      SubType,
-    #     IMFMediaType **ppWrap
-    #     )
+    HRESULT MFWrapMediaType(
+        IMFMediaType *pOrig,
+        REFGUID      MajorType,
+        REFGUID      SubType,
+        IMFMediaType **ppWrap
+        )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-mt_arbitrary_header
     ctypedef struct MT_ARBITRARY_HEADER:
@@ -1193,10 +1195,11 @@ cdef extern from "mfapi.h":
         )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/ns-mfapi-roi_area
-    # ctypedef struct ROI_AREA:
-    #     RECT  rect
-    #     INT32 QPDelta
-    # ctypedef ROI_AREA* PROI_AREA
+    ctypedef struct ROI_AREA:
+        RECT  rect
+        INT32 QPDelta
+
+    ctypedef ROI_AREA* PROI_AREA
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfapi/nf-mfapi-unpack2uint32asuint64
     void Unpack2UINT32AsUINT64(

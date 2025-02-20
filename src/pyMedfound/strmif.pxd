@@ -1,6 +1,6 @@
 from pyMedfound.windef cimport BOOL,BYTE,ULONG
 from pyMedfound.guiddef cimport GUID
-from pyMedfound.Unknwn cimport IUnknown
+from pyMedfound.unknwn cimport IUnknown
 
 # https://learn.microsoft.com/zh-cn/windows/win32/api/strmif/
 cdef extern from "strmif.h":

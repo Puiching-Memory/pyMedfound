@@ -122,4 +122,13 @@ cdef extern from "windef.h": # --> "minwindef.h"
     ctypedef SIZE* LPSIZE
 
     # https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
+    ctypedef struct RECT:
+        LONG left
+        LONG top
+        LONG right
+        LONG bottom
+
+    ctypedef RECT* PRECT
+    ctypedef RECT* LPRECT
+    ctypedef RECT* NPRECT
 
