@@ -1,4 +1,4 @@
-from pyMedfound.WinDef cimport BOOL,BYTE,ULONG
+from pyMedfound.windef cimport BOOL,BYTE,ULONG
 from pyMedfound.guiddef cimport GUID
 from pyMedfound.Unknwn cimport IUnknown
 

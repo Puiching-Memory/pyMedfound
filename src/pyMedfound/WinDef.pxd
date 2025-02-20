@@ -121,3 +121,5 @@ cdef extern from "windef.h": # --> "minwindef.h"
     ctypedef SIZE* PSIZE
     ctypedef SIZE* LPSIZE
 
+    # https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
+

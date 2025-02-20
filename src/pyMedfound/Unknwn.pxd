@@ -1,5 +1,5 @@
 from pyMedfound.Winerror cimport HRESULT
-from pyMedfound.WinDef cimport ULONG
+from pyMedfound.windef cimport ULONG
 from pyMedfound.guiddef cimport GUID,REFIID
 
 # https://learn.microsoft.com/zh-cn/windows/win32/api/unknwn/nn-unknwn-iunknown
