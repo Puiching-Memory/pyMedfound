@@ -74,6 +74,7 @@ cdef extern from "windef.h": # --> "minwindef.h"
     ctypedef const char* LPCSTR
     ctypedef const void* LPCVOID
     ctypedef const wchar_t* LPCWSTR
+    ctypedef const wchar_t* PCWSTR
     ctypedef char* PSTR
     ctypedef char* LPSTR
     
