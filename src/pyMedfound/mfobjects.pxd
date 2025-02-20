@@ -1,6 +1,6 @@
-from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID,LPCWSTR,ULONG,QWORD,UINT
+from pyMedfound.WinDef cimport BYTE,DWORD,LONG,BOOL,WORD,SIZE,LONGLONG,UINT64,UINT32,UINT8,LPWSTR,LPVOID,LPCWSTR,ULONG,QWORD,UINT,ULONGLONG
 from pyMedfound.Winerror cimport HRESULT
-from pyMedfound.guiddef cimport GUID,REFIID,REFGUID
+from pyMedfound.guiddef cimport GUID,REFIID,REFGUID,CLSID,REFCLSID
 from pyMedfound.Unknwn cimport IUnknown
 from pyMedfound.PropIdlBase cimport PROPVARIANT,REFPROPVARIANT
 from pyMedfound.wtypes cimport VT_UI4,VT_UI8,VT_R8,VT_CLSID,VT_LPWSTR,VT_UNKNOWN
@@ -296,9 +296,6 @@ cdef extern from "mfobjects.h":
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfactivate-shutdownobject
         HRESULT ShutdownObject()
 
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfaudiomediatype
-    # !Deprecated since Windows 7!
-
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfbytestream
     cdef cppclass IMFByteStream(IUnknown):
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfbytestream-beginread
@@ -535,9 +532,9 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-gettype
-        # HRESULT GetType(
-        #     MediaEventType *pmet # [out]
-        # )
+        HRESULT GetType(
+            MediaEventType *pmet # [out]
+        )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaevent-getvalue
         HRESULT GetValue(
@@ -565,12 +562,12 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventgenerator-queueevent
-        # HRESULT QueueEvent(
-        #     MediaEventType    met,              # [in]
-        #     REFGUID           guidExtendedType, # [in]
-        #     HRESULT           hrStatus,         # [in]
-        #     const PROPVARIANT *pvValue          # [in]
-        #     )
+        HRESULT QueueEvent(
+            MediaEventType    met,              # [in]
+            REFGUID           guidExtendedType, # [in]
+            HRESULT           hrStatus,         # [in]
+            const PROPVARIANT *pvValue          # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmediaeventqueue
     cdef cppclass IMFMediaEventQueue(IUnknown):
@@ -598,20 +595,20 @@ cdef extern from "mfobjects.h":
             )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-queueeventparamunk
-        # HRESULT QueueEventParamUnk(
-        #     MediaEventType met,              # [in]
-        #     REFGUID        guidExtendedType, # [in]
-        #     HRESULT        hrStatus,         # [in]
-        #     IUnknown       *pUnk             # [in]
-        #     )
+        HRESULT QueueEventParamUnk(
+            MediaEventType met,              # [in]
+            REFGUID        guidExtendedType, # [in]
+            HRESULT        hrStatus,         # [in]
+            IUnknown       *pUnk             # [in]
+            )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-queueeventparamvar
-        # HRESULT QueueEventParamVar(
-        #     MediaEventType    met,              # [in]
-        #     REFGUID           guidExtendedType, # [in]
-        #     HRESULT           hrStatus,         # [in]
-        #     const PROPVARIANT *pvValue          # [in]
-        #     )
+        HRESULT QueueEventParamVar(
+            MediaEventType    met,              # [in]
+            REFGUID           guidExtendedType, # [in]
+            HRESULT           hrStatus,         # [in]
+            const PROPVARIANT *pvValue          # [in]
+            )
 
         # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmediaeventqueue-shutdown
         HRESULT Shutdown()
@@ -645,24 +642,202 @@ cdef extern from "mfobjects.h":
             IMFMediaType *pIMediaType, # [in]
             DWORD        *pdwFlags     # [out]
             )
-            
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfaudiomediatype
+    # !Deprecated since Windows 7!
+    # cdef cppclass IMFAudioMediaType(IMFMediaType):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfaudiomediatype-getaudioformat
+        # const WAVEFORMATEX * GetAudioFormat()
+
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamattributesmanager
+    cdef cppclass IMFMuxStreamAttributesManager(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreamattributesmanager-getattributes
+        HRESULT GetAttributes(
+            DWORD         dwMuxStreamIndex,    # [in]
+            IMFAttributes **ppStreamAttributes # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreamattributesmanager-getstreamcount
+        HRESULT GetStreamCount(
+            DWORD *pdwMuxStreamCount # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreammediatypemanager
+    cdef cppclass IMFMuxStreamMediaTypeManager(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-addstreamconfiguration
+        HRESULT AddStreamConfiguration(
+            ULONGLONG ullStreamMask # [in]
+            )
 
-    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamsamplemanager
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-getmediatype
+        HRESULT GetMediaType(
+            DWORD        dwMuxStreamIndex, # [in]
+            IMFMediaType **ppMediaType     # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-getstreamconfiguration
+        HRESULT GetStreamConfiguration(
+            DWORD     ulIndex,        # [in]
+            ULONGLONG *pullStreamMask # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-getstreamconfigurationcount
+        HRESULT GetStreamConfigurationCount(
+            DWORD *pdwCount # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-getstreamcount
+        HRESULT GetStreamCount(
+            DWORD *pdwMuxStreamCount # [out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreammediatypemanager-removestreamconfiguration
+        HRESULT RemoveStreamConfiguration(
+            ULONGLONG ullStreamMask # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfplugincontrol
+    cdef cppclass IMFPluginControl(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfplugincontrol-getpreferredclsid
+        HRESULT GetPreferredClsid(
+            DWORD   pluginType, # [in]
+            LPCWSTR selector,   # [in]
+            CLSID   *clsid      # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfplugincontrol-isdisabled
+        HRESULT IsDisabled(
+            DWORD    pluginType, # [in]
+            REFCLSID clsid       # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfplugincontrol-setdisabled
+        HRESULT SetDisabled(
+            DWORD    pluginType, # [in]
+            REFCLSID clsid,      # [in]
+            BOOL     disabled    # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfplugincontrol-setpreferredclsid
+        HRESULT SetPreferredClsid(
+            DWORD       pluginType, # [in]
+            LPCWSTR     selector,   # [in]
+            const CLSID *clsid      # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfplugincontrol2
+    cdef cppclass IMFPluginControl2(IMFPluginControl):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfplugincontrol2-setpolicy
+        HRESULT SetPolicy(
+            MF_PLUGIN_CONTROL_POLICY policy # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfremoteasynccallback
+    # !Applications do not use or implement this interface.!
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfsample
+    cdef cppclass IMFSample(IMFAttributes):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-addbuffer
+        HRESULT AddBuffer(
+            IMFMediaBuffer *pBuffer # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-converttocontiguousbuffer
+        HRESULT ConvertToContiguousBuffer(
+            IMFMediaBuffer **ppBuffer # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-copytobuffer
+        HRESULT CopyToBuffer(
+            IMFMediaBuffer *pBuffer # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-getbuffercount
+        HRESULT GetBufferCount(
+            DWORD *pdwBufferCount # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-getsampleduration
+        HRESULT GetSampleDuration(
+            LONGLONG *phnsSampleDuration # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-getsampleflags
+        HRESULT GetSampleFlags(
+            DWORD *pdwSampleFlags # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-getsampletime
+        HRESULT GetSampleTime(
+            LONGLONG *phnsSampleTime # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-gettotallength
+        HRESULT GetTotalLength(
+            DWORD *pcbTotalLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-removeallbuffers
+        HRESULT RemoveAllBuffers()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-setsampleduration
+        HRESULT SetSampleDuration(
+            LONGLONG hnsSampleDuration # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-setsampleflags
+        HRESULT SetSampleFlags(
+            DWORD dwSampleFlags # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsample-setsampletime
+        HRESULT SetSampleTime(
+            LONGLONG hnsSampleTime # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfmuxstreamsamplemanager
+    cdef cppclass IMFMuxStreamSampleManager(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreamsamplemanager-getsample
+        HRESULT GetSample(
+            DWORD     dwMuxStreamIndex, # [in]
+            IMFSample **ppSample        # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreamsamplemanager-getstreamconfiguration
+        ULONGLONG GetStreamConfiguration()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfmuxstreamsamplemanager-getstreamcount
+        HRESULT GetStreamCount(
+            DWORD *pdwMuxStreamCount # [out]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfsampleoutputstream
+    cdef cppclass IMFSampleOutputStream(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsampleoutputstream-beginwritesample
+        HRESULT BeginWriteSample(
+            IMFSample        *pSample,   # [in]
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfsampleoutputstream-endwritesample
+        HRESULT EndWriteSample(
+            IMFAsyncResult *pResult # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nn-mfobjects-imfvideomediatype
+    cdef cppclass IMFVideoMediaType(IMFMediaType):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfvideomediatype-getvideoformat
+        # !Deprecated since Windows 7!
+        const MFVIDEOFORMAT * GetVideoFormat()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-imfvideomediatype-getvideorepresentation
+        # !Deprecated!
+        HRESULT GetVideoRepresentation(
+            GUID   guidRepresentation, # [in]
+            LPVOID *ppvRepresentation, # [out]
+            LONG   lStride             # [in]
+            )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mf_attribute_serialize_options
     ctypedef enum MF_ATTRIBUTE_SERIALIZE_OPTIONS:
@@ -749,10 +924,10 @@ cdef extern from "mfobjects.h":
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/nf-mfobjects-mfdeserializeattributesfromstream
     # HRESULT MFDeserializeAttributesFromStream(
-    # IMFAttributes *pAttr,
-    # DWORD         dwOptions,
-    # IStream       *pStm
-    # )
+        # IMFAttributes *pAttr,
+        # DWORD         dwOptions,
+        # IStream       *pStm
+        # )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfobjects/ne-mfobjects-mfnominalrange
     ctypedef enum MFNominalRange:
@@ -970,3 +1145,127 @@ cdef extern from "mfobjects.h":
         MFVideoTransferMatrix_ICtCp = 12
         MFVideoTransferMatrix_Last
         MFVideoTransferMatrix_ForceDWORD = 0x7fffffff
+    
+    # https://learn.microsoft.com/zh-cn/windows/win32/medfound/media-foundation-events
+    # mfobjects.h
+    ctypedef enum MediaEventType:
+        MEUnknown	= 0,
+        MEError	= 1,
+        MEExtendedType	= 2,
+        MENonFatalError	= 3,
+        MEGenericV1Anchor	= MENonFatalError,
+        MESessionUnknown	= 100,
+        MESessionTopologySet	= 101,
+        MESessionTopologiesCleared	= 102,
+        MESessionStarted	= 103,
+        MESessionPaused	= 104,
+        MESessionStopped	= 105,
+        MESessionClosed	= 106,
+        MESessionEnded	= 107,
+        MESessionRateChanged	= 108,
+        MESessionScrubSampleComplete	= 109,
+        MESessionCapabilitiesChanged	= 110,
+        MESessionTopologyStatus	= 111,
+        MESessionNotifyPresentationTime	= 112,
+        MENewPresentation	= 113,
+        MELicenseAcquisitionStart	= 114,
+        MELicenseAcquisitionCompleted	= 115,
+        MEIndividualizationStart	= 116,
+        MEIndividualizationCompleted	= 117,
+        MEEnablerProgress	= 118,
+        MEEnablerCompleted	= 119,
+        MEPolicyError	= 120,
+        MEPolicyReport	= 121,
+        MEBufferingStarted	= 122,
+        MEBufferingStopped	= 123,
+        MEConnectStart	= 124,
+        MEConnectEnd	= 125,
+        MEReconnectStart	= 126,
+        MEReconnectEnd	= 127,
+        MERendererEvent	= 128,
+        MESessionStreamSinkFormatChanged	= 129,
+        MESessionV1Anchor	= MESessionStreamSinkFormatChanged,
+        MESourceUnknown	= 200,
+        MESourceStarted	= 201,
+        MEStreamStarted	= 202,
+        MESourceSeeked	= 203,
+        MEStreamSeeked	= 204,
+        MENewStream	= 205,
+        MEUpdatedStream	= 206,
+        MESourceStopped	= 207,
+        MEStreamStopped	= 208,
+        MESourcePaused	= 209,
+        MEStreamPaused	= 210,
+        MEEndOfPresentation	= 211,
+        MEEndOfStream	= 212,
+        MEMediaSample	= 213,
+        MEStreamTick	= 214,
+        MEStreamThinMode	= 215,
+        MEStreamFormatChanged	= 216,
+        MESourceRateChanged	= 217,
+        MEEndOfPresentationSegment	= 218,
+        MESourceCharacteristicsChanged	= 219,
+        MESourceRateChangeRequested	= 220,
+        MESourceMetadataChanged	= 221,
+        MESequencerSourceTopologyUpdated	= 222,
+        MESourceV1Anchor	= MESequencerSourceTopologyUpdated,
+        MESinkUnknown	= 300,
+        MEStreamSinkStarted	= 301,
+        MEStreamSinkStopped	= 302,
+        MEStreamSinkPaused	= 303,
+        MEStreamSinkRateChanged	= 304,
+        MEStreamSinkRequestSample	= 305,
+        MEStreamSinkMarker	= 306,
+        MEStreamSinkPrerolled	= 307,
+        MEStreamSinkScrubSampleComplete	= 308,
+        MEStreamSinkFormatChanged	= 309,
+        MEStreamSinkDeviceChanged	= 310,
+        MEQualityNotify	= 311,
+        MESinkInvalidated	= 312,
+        MEAudioSessionNameChanged	= 313,
+        MEAudioSessionVolumeChanged	= 314,
+        MEAudioSessionDeviceRemoved	= 315,
+        MEAudioSessionServerShutdown	= 316,
+        MEAudioSessionGroupingParamChanged	= 317,
+        MEAudioSessionIconChanged	= 318,
+        MEAudioSessionFormatChanged	= 319,
+        MEAudioSessionDisconnected	= 320,
+        MEAudioSessionExclusiveModeOverride	= 321,
+        MESinkV1Anchor	= MEAudioSessionExclusiveModeOverride,
+        MECaptureAudioSessionVolumeChanged	= 322,
+        MECaptureAudioSessionDeviceRemoved	= 323,
+        MECaptureAudioSessionFormatChanged	= 324,
+        MECaptureAudioSessionDisconnected	= 325,
+        MECaptureAudioSessionExclusiveModeOverride	= 326,
+        MECaptureAudioSessionServerShutdown	= 327,
+        MESinkV2Anchor	= MECaptureAudioSessionServerShutdown,
+        METrustUnknown	= 400,
+        MEPolicyChanged	= 401,
+        MEContentProtectionMessage	= 402,
+        MEPolicySet	= 403,
+        METrustV1Anchor	= MEPolicySet,
+        MEWMDRMLicenseBackupCompleted	= 500,
+        MEWMDRMLicenseBackupProgress	= 501,
+        MEWMDRMLicenseRestoreCompleted	= 502,
+        MEWMDRMLicenseRestoreProgress	= 503,
+        MEWMDRMLicenseAcquisitionCompleted	= 506,
+        MEWMDRMIndividualizationCompleted	= 508,
+        MEWMDRMIndividualizationProgress	= 513,
+        MEWMDRMProximityCompleted	= 514,
+        MEWMDRMLicenseStoreCleaned	= 515,
+        MEWMDRMRevocationDownloadCompleted	= 516,
+        MEWMDRMV1Anchor	= MEWMDRMRevocationDownloadCompleted,
+        METransformUnknown	= 600,
+        METransformNeedInput	= ( METransformUnknown + 1 ) ,
+        METransformHaveOutput	= ( METransformNeedInput + 1 ) ,
+        METransformDrainComplete	= ( METransformHaveOutput + 1 ) ,
+        METransformMarker	= ( METransformDrainComplete + 1 ) ,
+        METransformInputStreamStateChanged	= ( METransformMarker + 1 ) ,
+        MEByteStreamCharacteristicsChanged	= 700,
+        MEVideoCaptureDeviceRemoved	= 800,
+        MEVideoCaptureDevicePreempted	= 801,
+        MEStreamSinkFormatInvalidated	= 802,
+        MEEncodingParameters	= 803,
+        MEContentProtectionMetadata	= 900,
+        MEDeviceThermalStateChanged	= 950,
+        MEReservedMax	= 10000
