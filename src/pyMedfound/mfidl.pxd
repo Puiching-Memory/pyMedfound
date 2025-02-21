@@ -1,8 +1,8 @@
 
-from pyMedfound.windef cimport BYTE,DWORD,LPWSTR,LPCWSTR,UINT32,BOOL,QWORD,ULONG,LONGLONG,UINT,UINT64,ULONGLONG
+from pyMedfound.windef cimport BYTE,DWORD,LPWSTR,LPCWSTR,UINT32,BOOL,QWORD,ULONG,LONGLONG,UINT,UINT64,ULONGLONG,LPVOID
 from pyMedfound.winerror cimport HRESULT
 from pyMedfound.unknwn cimport IUnknown
-from pyMedfound.guiddef cimport GUID,REFGUID
+from pyMedfound.guiddef cimport GUID,REFGUID,REFIID
 from pyMedfound.mfobjects cimport IMFByteStream,IMFAsyncCallback,IMFAsyncResult,IMFAttributes,IMFActivate
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/
@@ -510,4 +510,139 @@ cdef extern from "mfidl.h":
             )
 
     # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imffinalizablemediasink
+    cdef cppclass IMFFinalizableMediaSink(IMFMediaSink):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imffinalizablemediasink-beginfinalize
+        HRESULT BeginFinalize(
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState  # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imffinalizablemediasink-endfinalize
+        HRESULT EndFinalize(
+            IMFAsyncResult *pResult # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfgetservice
+    cdef cppclass IMFGetService(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfgetservice-getservice
+        HRESULT GetService(
+            REFGUID guidService, # [in]
+            REFIID  riid,        # [in]
+            LPVOID  *ppvObject   # [out]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfhttpdownloadrequest
+    cdef cppclass IMFHttpDownloadRequest(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-addheader
+        HRESULT AddHeader(
+            LPCWSTR szHeader # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-beginreadpayload
+        HRESULT BeginReadPayload(
+            BYTE             *pb,         # [out]
+            ULONG            cb,          # [in]
+            IMFAsyncCallback *pCallback,  # [in]
+            IUnknown         *punkState   # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-beginreceiveresponse
+        HRESULT BeginReceiveResponse(
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-beginsendrequest
+        HRESULT BeginSendRequest(
+            const BYTE       *pbPayload, # [in]
+            ULONG            cbPayload,  # [in]
+            IMFAsyncCallback *pCallback, # [in]
+            IUnknown         *punkState
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-close
+        HRESULT Close()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-endreadpayload
+        HRESULT EndReadPayload(
+            IMFAsyncResult *pResult,   # [in]
+            QWORD          *pqwOffset, # [out]
+            ULONG          *pcbRead    # [out]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-endreceiveresponse
+        HRESULT EndReceiveResponse(
+            IMFAsyncResult *pResult # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-endsendrequest
+        HRESULT EndSendRequest(
+            IMFAsyncResult *pResult # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-getatendofpayload
+        HRESULT GetAtEndOfPayload(
+            BOOL *pfAtEndOfPayload # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-gethttpstatus
+        HRESULT GetHttpStatus(
+            DWORD *pdwHttpStatus # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-getrangeendoffset
+        HRESULT GetRangeEndOffset(
+            QWORD *pqwRangeEnd # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-gettimeseekresult
+        HRESULT GetTimeSeekResult(
+            QWORD *pqwStartTime, # [out]
+            QWORD *pqwStopTime,  # [out]
+            QWORD *pqwDuration   # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-gettotallength
+        HRESULT GetTotalLength(
+            QWORD *pqwTotalLength # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-geturl
+        HRESULT GetURL(
+            LPWSTR *ppszURL # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-hasnullsourceorigin
+        HRESULT HasNullSourceOrigin(
+            BOOL *pfNullSourceOrigin # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadrequest-queryheader
+        HRESULT QueryHeader(
+            LPCWSTR szHeaderName,    # [in]
+            DWORD   dwIndex,         # [in]
+            LPWSTR  *ppszHeaderValue # [out]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfhttpdownloadsession
+    cdef cppclass IMFHttpDownloadSession(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadsession-close
+        HRESULT Close()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadsession-createrequest
+        HRESULT CreateRequest(
+            LPCWSTR                szObjectName,      # [in]
+            BOOL                   fBypassProxyCache, # [in]
+            BOOL                   fSecure,           # [in]
+            LPCWSTR                szVerb,            # [in, optional]
+            LPCWSTR                szReferrer,        # [in, optional]
+            IMFHttpDownloadRequest **ppRequest
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadsession-setserver
+        HRESULT SetServer(
+            LPCWSTR szServerName, # [in]
+            DWORD   nPort         # [in]
+            )
     
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfhttpdownloadsessionprovider
