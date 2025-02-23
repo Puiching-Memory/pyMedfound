@@ -3,7 +3,8 @@ from pyMedfound.windef cimport BYTE,DWORD,LPWSTR,LPCWSTR,UINT32,BOOL,QWORD,ULONG
 from pyMedfound.winerror cimport HRESULT
 from pyMedfound.unknwn cimport IUnknown
 from pyMedfound.guiddef cimport GUID,REFGUID,REFIID
-from pyMedfound.mfobjects cimport IMFByteStream,IMFAsyncCallback,IMFAsyncResult,IMFAttributes,IMFActivate
+from pyMedfound.mfobjects cimport IMFByteStream,IMFAsyncCallback,IMFAsyncResult,IMFAttributes,IMFActivate,IMFMediaEventGenerator,IMFMediaType
+from pyMedfound.PropIdlBase cimport PROPVARIANT
 
 # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/
 cdef extern from "mfidl.h":
@@ -646,3 +647,195 @@ cdef extern from "mfidl.h":
             )
     
     # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfhttpdownloadsessionprovider
+    cdef cppclass IMFHttpDownloadSessionProvider(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfhttpdownloadsessionprovider-createhttpdownloadsession
+        HRESULT CreateHttpDownloadSession(
+            LPCWSTR                wszScheme,          # [in]
+            IMFHttpDownloadSession **ppDownloadSession # [out]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfinputtrustauthority
+    cdef cppclass IMFInputTrustAuthority(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-bindaccess
+        HRESULT BindAccess(
+            MFINPUTTRUSTAUTHORITY_ACCESS_PARAMS *pParam # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-getdecrypter
+        HRESULT GetDecrypter(
+            REFIID riid, # [in]
+            void   **ppv # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-getpolicy
+        HRESULT GetPolicy(
+            MFPOLICYMANAGER_ACTION Action,    # [in]
+            IMFOutputPolicy        **ppPolicy # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-requestaccess
+        HRESULT RequestAccess(
+            MFPOLICYMANAGER_ACTION Action,                    # [in]
+            IMFActivate            **ppContentEnablerActivate # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-reset
+        HRESULT Reset()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfinputtrustauthority-updateaccess
+        HRESULT UpdateAccess(
+            MFINPUTTRUSTAUTHORITY_ACCESS_PARAMS *pParam # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imflocalmftregistration
+    cdef cppclass IMFLocalMFTRegistration(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imflocalmftregistration-registermfts
+        HRESULT RegisterMFTs(
+            MFT_REGISTRATION_INFO *pMFTs, # [in]
+            DWORD                 cMFTs   # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasession
+    cdef cppclass IMFMediaSession(IMFMediaEventGenerator):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-cleartopologies
+        HRESULT ClearTopologies()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-close
+        HRESULT Close()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-getclock
+        HRESULT GetClock(
+            IMFClock **ppClock # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-getfulltopology
+        HRESULT GetFullTopology(
+            DWORD       dwGetFullTopologyFlags, # [in]
+            TOPOID      TopoId,                 # [in]
+            IMFTopology **ppFullTopology        # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-getsessioncapabilities
+        HRESULT GetSessionCapabilities(
+            DWORD *pdwCaps # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-pause
+        HRESULT Pause()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-settopology
+        HRESULT SetTopology(
+            DWORD       dwSetTopologyFlags, # [in]
+            IMFTopology *pTopology          # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-shutdown
+        HRESULT Shutdown()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-start
+        HRESULT Start(
+            const GUID        *pguidTimeFormat,  # [in]
+            const PROPVARIANT *pvarStartPosition # [in]
+            ) 
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasession-stop
+        HRESULT Stop()
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasink
+    cdef cppclass IMFMediaSink(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-addstreamsink
+        HRESULT AddStreamSink(
+            DWORD         dwStreamSinkIdentifier, # [in]
+            IMFMediaType  *pMediaType,            # [in]
+            IMFStreamSink **ppStreamSink          # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-getcharacteristics
+        HRESULT GetCharacteristics(
+            DWORD *pdwCharacteristics # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-getpresentationclock
+        HRESULT GetPresentationClock(
+            IMFPresentationClock **ppPresentationClock # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-getstreamsinkbyid
+        HRESULT GetStreamSinkById(
+            DWORD         dwStreamSinkIdentifier, # [in]
+            IMFStreamSink **ppStreamSink          # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-getstreamsinkcount
+        HRESULT GetStreamSinkCount(
+            DWORD *pcStreamSinkCount # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-removestreamsink
+        HRESULT RemoveStreamSink(
+            DWORD dwStreamSinkIdentifier # [in]
+            )
+        
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-setpresentationclock
+        HRESULT SetPresentationClock(
+            IMFPresentationClock *pPresentationClock # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasink-shutdown
+        HRESULT Shutdown()
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasinkpreroll
+    cdef cppclass IMFMediaSinkPreroll(IUnknown):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasinkpreroll-notifypreroll
+        HRESULT NotifyPreroll(
+            MFTIME hnsUpcomingStartTime # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasource
+    cdef cppclass IMFMediaSource(IMFMediaEventGenerator):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-createpresentationdescriptor
+        HRESULT CreatePresentationDescriptor(
+            IMFPresentationDescriptor **ppPresentationDescriptor # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-getcharacteristics
+        HRESULT GetCharacteristics(
+            DWORD *pdwCharacteristics # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-pause
+        HRESULT Pause()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-shutdown
+        HRESULT Shutdown()
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-start
+        HRESULT Start(
+            IMFPresentationDescriptor *pPresentationDescriptor, # [in]
+            const GUID                *pguidTimeFormat,         # [in]
+            const PROPVARIANT         *pvarStartPosition        # [in]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasource-stop
+        HRESULT Stop()
+    
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasourceex
+    cdef cppclass IMFMediaSourceEx(IMFMediaSource):
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasourceex-getsourceattributes
+        HRESULT GetSourceAttributes(
+            IMFAttributes **ppAttributes # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasourceex-getstreamattributes
+        HRESULT GetStreamAttributes(
+            DWORD         dwStreamIdentifier, # [in]
+            IMFAttributes **ppAttributes      # [out]
+            )
+
+        # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nf-mfidl-imfmediasourceex-setd3dmanager
+        HRESULT SetD3DManager(
+            IUnknown *pManager # [in]
+            )
+
+    # https://learn.microsoft.com/en-us/windows/win32/api/mfidl/nn-mfidl-imfmediasourcepresentationprovider
+    
